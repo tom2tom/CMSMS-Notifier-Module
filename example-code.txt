@@ -1,0 +1,27 @@
+example-code for using the Notifier module to send messages
+
+$ob = new MessageSender();
+list($success,$errmsg) = $ob->Send($from,$to,$textparms,$mailparms,$tweetmsg);
+
+Send method arguments:
+$from: sender address (a phone, email or handle) or FALSE
+$to: destination (or ','-separated sequence of them, being any combination of) phone, email, handle
+optional $textparms: array of SMS message parameters ('prefix','pattern','body'), or FALSE
+  'prefix'=>country-code to be prepended to destination phone-numbers, or name
+		of country to be used to look up that code
+  'pattern'=>regex for matching acceptable phone no's e.g. in Oz '^04\d{8}$',
+    it's applied to each candidate after any whitespace is removed, and before
+    any prefix-adjustment
+  'body'=>message content
+optional $mailparms: array of email message parameters ('subject','cc','bcc','body','html'), or FALSE
+  optional 'cc','bcc'=>extra destination address (or ','-separated sequence of them)
+  optional 'html'=>boolean whether to format message as html
+optional $tweetmsg: tweet body, or FALSE
+
+If any destination is a twitter handle, and $from is not such a handle, the default '@CMSMSNotifier' account will be used. Any other account needs to be pre-authorised. Refer to module help for more on this.
+Otherwise, $from is used only for the relevant channel and there, only if the relevant gateway/account etc allows it.
+Any 'channel' can be skipped, by not supplying the corresponding optional argument.
+
+Method returns: array with two members:
+ [0] TRUE|FALSE representing success
+ [1] '' or specific problem(s) message (including any destination(s) not used)
