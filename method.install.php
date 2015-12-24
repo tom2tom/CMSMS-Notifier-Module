@@ -35,7 +35,7 @@ $this->SetPreference('privapi','E+HXtNA+Zzgv+bC0m28ySJ999zNN/Qht/0kKOY1Ma4R+25fF
 TEMPLATE
  <p class="pagetext">{$mod->Lang('prompt_master_password')}:</p>
  <p class="pageinput">
-  <input type="password" name="{$actionid}masterpass" value="{$masterpass}" size="20" maxlength="64" />
+  <input type="password" name="{$actionid}masterpass" value="{$masterpass}" size="36" maxlength="96" />
  </p>
 SAVING
 	$oldpw = $this->GetPreference('masterpass');
