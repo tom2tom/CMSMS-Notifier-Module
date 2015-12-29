@@ -1,13 +1,8 @@
 <?php
-$lang['friendlyname']='Notifications';
-$lang['moddescription']='Notifier provides an interface for other modules to conveniently send messages';
-$lang['postinstall']='Notifications module has been installed.';
-$lang['postuninstall']='Notifications module has been uninstalled.';
+$lang['cancel']='Cancel';
 $lang['confirm_uninstall']='You\'re sure you want to uninstall the Notifications module?';
-$lang['uninstalled']='Module uninstalled.';
-$lang['installed']='Module version %s installed.';
-$lang['upgraded']='Module upgraded to version %s.';
-//$lang['err_upgrade']='Module upgrade aborted, error when attempting to %s';
+$lang['connect']='Connect';
+
 $lang['err_data_type']='Data processing error: %s';
 $lang['err_general']='Error!';
 $lang['err_missingtype']='missing %s';
@@ -18,10 +13,26 @@ $lang['err_somenosend']='Not sent to: %s';
 $lang['err_system']='System error';
 $lang['err_text']='Invalid SMS content';
 $lang['err_token']='failed to save token';
+//$lang['err_upgrade']='Module upgrade aborted, error when attempting to %s';
 
-$lang['connect']='Connect';
+$lang['friendlyname']='Notifications';
+
+$lang['installed']='Module version %s installed.';
+
+$lang['moddescription']='Notifier provides an interface for other modules to conveniently send messages';
+
+$lang['postinstall']='Notifications module has been installed.';
+$lang['postuninstall']='Notifications module has been uninstalled.';
+
 $lang['status_complete']='Completed';
+$lang['submit']='Save';
+
 $lang['title_auth']='Authorise Notifier-module-initiated tweets from a specific twitter account';
+$lang['title_password'] = 'Pass-phrase for securing sensitive data';
+
+$lang['uninstalled']='Module uninstalled.';
+$lang['upgraded']='Module upgraded to version %s.';
+
 
 $lang['help']=<<<EOS
 <h3>What Does This Do?</h3>
