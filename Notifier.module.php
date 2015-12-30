@@ -139,7 +139,8 @@ class Notifier extends CMSModule
 
 	function VisibleToAdminUser()
 	{
-		return $this->CheckPermission('Modify Site Preferences');
+		return ($this->CheckPermission('ModifyNotifierProperties')
+		 || $this->CheckPermission('SeeNotifierProperties'));
 	}
 
 /*	function GetHeaderHTML()
