@@ -1,7 +1,28 @@
 <?php
+$lang['authorise']='Authorize';
+$lang['authorise_tip']='visit Twitter';
+
 $lang['cancel']='Cancel';
 $lang['confirm_uninstall']='You\'re sure you want to uninstall the Notifications module?';
 $lang['connect']='Connect';
+
+$lang['channel_email_from']='They will be sent by %s';
+$lang['channel_email_no']='Emails CANNOT be sent';
+$lang['channel_email_title']='Email';
+$lang['channel_email_yes']='Emails can be sent';
+
+$lang['channel_text_gate']='The gateway is %s';
+$lang['channel_text_no']='Text messages CANNOT be sent';
+$lang['channel_text_properties']='Gateway parameters are:<br />%s';
+$lang['channel_text_title']='SMS';
+$lang['channel_text_yes']='Text messages can be sent';
+
+$lang['channel_tweet_from']='The default poster is %s';
+$lang['channel_tweet_no']='Tweets CANNOT be posted';
+$lang['channel_tweet_others_none']='No other poster is registered';
+$lang['channel_tweet_others']='Other registered posters are:<br />%s';
+$lang['channel_tweet_title']='Tweet';
+$lang['channel_tweet_yes']='Tweets can be posted';
 
 $lang['err_data_type']='Data processing error: %s';
 $lang['err_general']='Error!';
@@ -21,6 +42,8 @@ $lang['installed']='Module version %s installed.';
 
 $lang['moddescription']='Notifier provides an interface for other modules to conveniently send messages';
 
+$lang['no']='no';
+
 $lang['perm_modify']='Modify Notifier Settings';
 $lang['perm_see']='View Notifier Properties';
 $lang['postinstall']='Notifications module has been installed. Remember to apply Notifier* permission(s) where relevant.';
@@ -31,13 +54,15 @@ $lang['status_complete']='Completed';
 $lang['submit']='Save';
 
 $lang['title_auth']='Authorise Notifier-module-initiated tweets from a specific twitter account';
-$lang['title_maintab']='Overview';
+$lang['title_maintab']='Channels';
 $lang['title_settingstab']='Settings';
 $lang['title_testtab']='Test';
 $lang['title_password']='Pass-phrase for securing sensitive data';
 
 $lang['uninstalled']='Module uninstalled.';
 $lang['upgraded']='Module upgraded to version %s.';
+
+$lang['yes']='yes';
 
 $lang['help']=<<<EOS
 <h3>What Does This Do?</h3>
