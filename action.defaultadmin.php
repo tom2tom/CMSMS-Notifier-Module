@@ -57,7 +57,29 @@ if(isset($params['submit']))
 	}
 }
 
-$smarty->assign('form_start',$this->CreateFormStart($id,'defaultadmin'));
+$indx = 0;
+if(isset($params['activetab']))
+{
+	switch($params['activetab'])
+	{
+	 case 'test':
+		$indx = 1;
+		break;
+	 case 'settings':
+		$indx = 2;
+		break;
+	}
+}
+
+$smarty->assign('tabsheader',$this->StartTabHeaders().
+ $this->SetTabHeader('main',$this->Lang('title_maintab'),$indx==0).
+ $this->SetTabHeader('test',$this->Lang('title_testtab'),$indx==1).
+ $this->SetTabHeader('settings',$this->Lang('title_settingstab'),$indx==2).
+ $this->EndTabHeaders().$this->StartTabContent());
+
+//NOTE CMSMS 2+ barfs if EndTab() is called before EndTabContent() - some craziness there !!!
+$smarty->assign('tabsfooter',$this->EndTabContent());
+$smarty->assign('tab_end',$this->EndTab());
 $smarty->assign('form_end',$this->CreateFormEnd());
 
 $jsincs = array();
@@ -65,6 +87,18 @@ $jsfuncs = array();
 $jsloads = array();
 $baseurl = $this->GetModuleURLPath();
 
+if(!empty($params['message']))
+	$smarty->assign('message',$params['message']);
+
+$smarty->assign('tabstart_main',$this->StartTab('main'));
+$smarty->assign('formstart_main',$this->CreateFormStart($id,'defaultadmin'));
+
+$smarty->assign('tabstart_test',$this->StartTab('test'));
+$smarty->assign('formstart_test',$this->CreateFormStart($id,'test'));
+$smarty->assign('send',$this->CreateInputSubmit($id,'send',$this->Lang('send')));
+
+$smarty->assign('tabstart_settings',$this->StartTab('settings'));
+$smarty->assign('formstart_settings',$this->CreateFormStart($id,'defaultadmin'));
 $smarty->assign('title_password',$this->Lang('title_password'));
 
 $pw = $this->GetPreference('masterpass');

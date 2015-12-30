@@ -26,11 +26,15 @@ $lang['perm_see']='View Notifier Properties';
 $lang['postinstall']='Notifications module has been installed. Remember to apply Notifier* permission(s) where relevant.';
 $lang['postuninstall']='Notifications module has been uninstalled.';
 
+$lang['send']='Send';
 $lang['status_complete']='Completed';
 $lang['submit']='Save';
 
 $lang['title_auth']='Authorise Notifier-module-initiated tweets from a specific twitter account';
-$lang['title_password'] = 'Pass-phrase for securing sensitive data';
+$lang['title_maintab']='Overview';
+$lang['title_settingstab']='Settings';
+$lang['title_testtab']='Test';
+$lang['title_password']='Pass-phrase for securing sensitive data';
 
 $lang['uninstalled']='Module uninstalled.';
 $lang['upgraded']='Module upgraded to version %s.';
