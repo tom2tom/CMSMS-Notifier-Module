@@ -55,6 +55,7 @@ if(isset($params['submit']))
 			$this->SetPreference('masterpass',$newpw);
 		}
 	}
+	$params['activetab'] = 'settings';
 }
 
 $indx = 0;
