@@ -21,7 +21,9 @@ $lang['installed']='Module version %s installed.';
 
 $lang['moddescription']='Notifier provides an interface for other modules to conveniently send messages';
 
-$lang['postinstall']='Notifications module has been installed.';
+$lang['perm_modify']='Modify Notifier Settings';
+$lang['perm_see']='View Notifier Properties';
+$lang['postinstall']='Notifications module has been installed. Remember to apply Notifier* permission(s) where relevant.';
 $lang['postuninstall']='Notifications module has been uninstalled.';
 
 $lang['status_complete']='Completed';
@@ -33,11 +35,10 @@ $lang['title_password'] = 'Pass-phrase for securing sensitive data';
 $lang['uninstalled']='Module uninstalled.';
 $lang['upgraded']='Module upgraded to version %s.';
 
-
 $lang['help']=<<<EOS
 <h3>What Does This Do?</h3>
-This module provides a simple interface for other modules to send messages, by one of several
-channels which accord with the recipients' address(es).
+This module provides a simple interface for other modules to send messages, via
+a channel appropriate for the respective recipients' address.
 For any message, a specific channel can be used, or some or all of them can be tried.
 <h3>How Do I Use It?</h3>
 <h4>Communication by email</h4>
