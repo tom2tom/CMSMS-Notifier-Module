@@ -92,7 +92,128 @@ if(!empty($params['message']))
 	$smarty->assign('message',$params['message']);
 
 $smarty->assign('tabstart_main',$this->StartTab('main'));
-$smarty->assign('formstart_main',$this->CreateFormStart($id,'defaultadmin'));
+$smarty->assign('formstart_main',$this->CreateFormStart($id,'twitaccount'));
+
+$details = array();
+$mod = cms_utils::get_module('SMSG');
+if($mod)
+{
+	unset($mod);
+	$gateway = smsg_utils::get_gateway();
+	if($gateway)
+	{
+		$details[] = $this->Lang('channel_text_yes').'.';
+		$y = $this->Lang('yes');
+		$n = $this->Lang('no');
+		$t = '<ul>';
+		$d = $gateway->get_name();
+		$e = $gateway->get_description();
+		if($e)
+			$d .= ' ('.$e.')';
+		$t .= '<li>name:'.$d.'</li>';
+		$t .= '<li>require country prefix:';
+		if($gateway->require_country_prefix())
+			$t .= $y.'</li>';
+		else
+			$t .= $n.'</li>';
+		$t .= '<li>require plus prefix:';
+		if($gateway->require_plus_prefix())
+			$t .= $y.'</li>';
+		else
+			$t .= $n.'</li>';
+		$t .= '<li>support custom sender:';
+		if($gateway->support_custom_sender())
+			$t .= $y.'</li>';
+		else
+			$t .= $n.'</li>';
+		$t .= '<li>support mms:';
+		if($gateway->support_mms())
+			$t .= $y.'</li>';
+		else
+			$t .= $n.'</li>';
+		$t .= '<li>multi-number separator:';
+		$d = $gateway->multi_number_separator();
+		if($d)
+			$t .= '\''.$d.'\'</li>';
+		else
+			$t .= $n.'</li>';
+		$t .= '</ul>';
+		$details[] = $this->Lang('channel_text_properties',$t);
+	}
+	else
+	{
+		$details[] = $this->Lang('channel_text_no').'.';
+	}
+}
+else
+{
+	$details[] = $this->Lang('channel_text_no').'.';
+}
+
+$channeldata = array(0=>array(),1=>array(),2=>array());
+$channeldata[0][] = $this->Lang('channel_text_title');
+$channeldata[0][] = $details;
+
+$details = array();
+if($this->before20)
+{
+	$mod = cms_utils::get_module('CMSMailer');
+	if($mod)
+	{
+		$details[] = $this->Lang('channel_email_yes').'.';
+		$s1 = $mod->GetPreference('fromuser');
+		$s2 = $mod->GetPreference('from');
+		if($s1)
+			$from = $s1.' &lt;'.$s2.'&gt;';
+		elseif($s2)
+			$from = $s2;
+		else
+			$from = '??';
+		$details[] = $this->Lang('channel_email_from',$from).'.';
+		unset($mod);
+	}
+	else
+		$details[] = $this->Lang('channel_email_no').'.';
+}
+else
+{
+	$details[] = $this->Lang('channel_email_yes').'.';
+	$prefs = unserialize(cms_siteprefs::get('mailprefs'));
+	$s1 = get_parameter_value($prefs,'fromuser');
+	$s2 = get_parameter_value($prefs,'from');
+	if($s1)
+		$from = $s1.' &lt;'.$s2.'&gt;';
+	elseif($s2)
+		$from = $s2;
+	else
+		$from = '??';
+	$details[] = $this->Lang('channel_email_from',$from).'.';
+}
+
+$channeldata[1][] = $this->Lang('channel_email_title');
+$channeldata[1][] = $details;
+
+$details = $db->GetCol('SELECT handle FROM '.cms_db_prefix().' WHERE pubtoken<>"" AND privtoken<>""');
+if($details)
+{
+	$t = '<ul>';
+	foreach($details as $from)
+		$t .= '<li>'.$from.'</li>';
+	$t .= '</ul>';
+	$from = $this->Lang('channel_tweet_others',$t);
+}
+else
+	$from = $this->Lang('channel_tweet_others_none').'.';
+
+$channeldata[2][] = $this->Lang('channel_tweet_title');
+$channeldata[2][] = array(
+	$this->Lang('channel_tweet_yes').'.',
+	$this->Lang('channel_tweet_from','@CMSMSNotifier').'.',
+	$from,
+	'',
+	$this->CreateInputSubmit($id,'connect',$this->Lang('authorise'),'title="'.$this->Lang('authorise_tip').'"')
+);
+$smarty->assign('channels',$channeldata);
 
 $smarty->assign('tabstart_test',$this->StartTab('test'));
 $smarty->assign('formstart_test',$this->CreateFormStart($id,'test'));
@@ -120,10 +241,10 @@ $jsloads[] = <<<EOS
 EOS;
 
 if($pmod)
+{
 	$smarty->assign('submit',$this->CreateInputSubmit($id,'submit',$this->Lang('submit')));
-else
-	$smarty->assign('submit',null);
-$smarty->assign('cancel',$this->CreateInputSubmit($id,'cancel',$this->Lang('cancel')));
+	$smarty->assign('cancel',$this->CreateInputSubmit($id,'cancel',$this->Lang('cancel')));
+}
 
 if($jsloads)
 {

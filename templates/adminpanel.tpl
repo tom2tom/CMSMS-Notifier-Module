@@ -3,7 +3,10 @@
 {$tabstart_main}
 {$formstart_main}
 <div class="pageinput">
-STUFF
+{foreach from=$channels item=group}<fieldset style="margin:0;padding:0 1em;">
+<legend>{$group[0]}</legend>
+{foreach from=$group[1] item=row}{if $row}<p>{$row}</p>{else}<br />{/if}{/foreach}
+</fieldset>{/foreach}
 </div>
 {$form_end}
 {$tab_end}
@@ -23,8 +26,10 @@ STUFF
 <div class="pageinput">
 <p class="pagetext">{$title_password}:</p>
 <p>{$input_password}</p>
+{if isset($submit)}
 <br />
 <p>{$submit} {$cancel}</p>
+{/if}
 </div>
 {$form_end}
 {$tab_end}
