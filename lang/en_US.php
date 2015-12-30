@@ -38,6 +38,8 @@ $lang['err_token']='failed to save token';
 
 $lang['friendlyname']='Notifications';
 
+$lang['help_address']='This can be for any supported channel - a suitably-formatted phone number, an email address, or twitter handle (which will be converted to a corresponding hashtag)';
+
 $lang['installed']='Module version %s installed.';
 
 $lang['moddescription']='Notifier provides an interface for other modules to conveniently send messages';
@@ -53,6 +55,7 @@ $lang['send']='Send';
 $lang['status_complete']='Completed';
 $lang['submit']='Save';
 
+$lang['title_address']='Destination';
 $lang['title_auth']='Authorise Notifier-module-initiated tweets from a specific twitter account';
 $lang['title_maintab']='Channels';
 $lang['title_settingstab']='Settings';

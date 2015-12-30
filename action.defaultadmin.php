@@ -217,6 +217,10 @@ $smarty->assign('channels',$channeldata);
 
 $smarty->assign('tabstart_test',$this->StartTab('test'));
 $smarty->assign('formstart_test',$this->CreateFormStart($id,'test'));
+
+$smarty->assign('title_address',$this->Lang('title_address'));
+$smarty->assign('input_address',$this->CreateInputText($id,'address','',30,50));
+$smarty->assign('help_address',$this->Lang('help_address'));
 $smarty->assign('send',$this->CreateInputSubmit($id,'send',$this->Lang('send')));
 
 $smarty->assign('tabstart_settings',$this->StartTab('settings'));

@@ -14,9 +14,10 @@
 {$tabstart_test}
 {$formstart_test}
 <div class="pageinput">
-STUFF
-<br /><br />
-<p>{$send}</p>
+<p class="pagetext">{$title_address}:</p>
+<p>{$input_address}<br />
+{$help_address}<br /><br />
+{$send}</p>
 </div>
 {$form_end}
 {$tab_end}
