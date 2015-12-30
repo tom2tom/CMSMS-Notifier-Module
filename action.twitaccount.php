@@ -1,7 +1,7 @@
 <?php
 #----------------------------------------------------------------------
 # Module: Notifier - a communications module
-# Action: twtauth - get credentials for and authorise a non-default twitter account
+# Action: twitaccount - get credentials for and authorize a non-default twitter account
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
@@ -15,11 +15,11 @@ try
 		try
 		{
 			$conn = new TwitterCredential($apipublic,$apiprivate);
-			//when returning from twitter, MUST redirect with a valid $returnid,
-			//so we don't return here directly
+			//when returning from twitter, MUST redirect with a valid $returnid, so
+			//we don't return here directly
 			$url = $this->CreateLink($id,'default',NULL,NULL,array('returnid'=>$returnid),NULL,TRUE);
-			//cleanup & force a secure return-communication (which if the site is non-secure,
-			//freaks the browser first-time, AND stuffs up on-page-include-URLS, requiring
+			//cleanup & force a secure return-communication (which, if the site is non-secure,
+			//freaks the browser first-time, AND stuffs up on-page-include-URLs, requiring
 			//a local redirect to fix)
 			$callback = str_replace(array($config['root_url'],'amp;'),array($config['ssl_url'],''),$url);
 			$message = $conn->gogetToken($callback); //should redirect to get token
