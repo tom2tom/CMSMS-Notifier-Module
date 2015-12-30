@@ -16,6 +16,9 @@ if(isset($params['submit']))
 {
 	if($pmod)
 	{
+		$this->SetPreference('smspattern',$params['smspattern']);
+		$this->SetPreference('smsprefix',$params['smsprefix']);
+
 		$oldpw = $this->GetPreference('masterpass');
 		if($oldpw)
 			$oldpw = $funcs->unfusc($oldpw);
@@ -219,14 +222,24 @@ $smarty->assign('tabstart_test',$this->StartTab('test'));
 $smarty->assign('formstart_test',$this->CreateFormStart($id,'test'));
 
 $smarty->assign('title_address',$this->Lang('title_address'));
-$smarty->assign('input_address',$this->CreateInputText($id,'address','',30,50));
+$t = (isset($params['address'])) ? $params['address']:'';
+$smarty->assign('input_address',$this->CreateInputText($id,'address',$t,30,50));
 $smarty->assign('help_address',$this->Lang('help_address'));
+$smarty->assign('help_address2',$this->Lang('help_address2'));
 $smarty->assign('send',$this->CreateInputSubmit($id,'send',$this->Lang('send')));
 
 $smarty->assign('tabstart_settings',$this->StartTab('settings'));
 $smarty->assign('formstart_settings',$this->CreateFormStart($id,'defaultadmin'));
-$smarty->assign('title_password',$this->Lang('title_password'));
 
+$smarty->assign('title_smspattern',$this->Lang('title_smspattern'));
+$smarty->assign('input_smspattern',$this->CreateInputText($id,'smspattern',$this->GetPreference('smspattern'),20,30));
+$smarty->assign('help_smspattern',$this->Lang('help_smspattern'));
+
+$smarty->assign('title_smsprefix',$this->Lang('title_smsprefix'));
+$smarty->assign('input_smsprefix',$this->CreateInputText($id,'smsprefix',$this->GetPreference('smsprefix'),4,5));
+$smarty->assign('help_smsprefix',$this->Lang('help_smsprefix'));
+
+$smarty->assign('title_password',$this->Lang('title_password'));
 $pw = $this->GetPreference('masterpass');
 if($pw)
 	$pw = $funcs->unfusc($pw);

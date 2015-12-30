@@ -17,6 +17,12 @@
 <p class="pagetext">{$title_address}:</p>
 <p>{$input_address}<br />
 {$help_address}<br /><br />
+{$help_address2}
+<p class="pagetext">{$title_smsprefix}:</p>
+<p>{$input_smsprefix}</p>
+<p class="pagetext">{$title_smspattern}:</p>
+<p>{$input_smspattern}</p>
+<br />
 {$send}</p>
 </div>
 {$form_end}
@@ -25,6 +31,12 @@
 {$tabstart_settings}
 {$formstart_settings}
 <div class="pageinput">
+<p class="pagetext">{$title_smsprefix}:</p>
+<p>{$input_smsprefix}<br />
+{$help_smsprefix}</p>
+<p class="pagetext">{$title_smspattern}:</p>
+<p>{$input_smspattern}<br />
+{$help_smspattern}</p>
 <p class="pagetext">{$title_password}:</p>
 <p>{$input_password}</p>
 {if isset($submit)}

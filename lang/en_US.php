@@ -24,6 +24,7 @@ $lang['channel_tweet_others']='Other registered posters are:<br />%s';
 $lang['channel_tweet_title']='Tweet';
 $lang['channel_tweet_yes']='Tweets can be posted';
 
+$lang['err_address']='Nothing sent - address not recognised';
 $lang['err_data_type']='Data processing error: %s';
 $lang['err_general']='Error!';
 $lang['err_missingtype']='missing %s';
@@ -38,10 +39,14 @@ $lang['err_token']='failed to save token';
 
 $lang['friendlyname']='Notifications';
 
-$lang['help_address']='This can be for any supported channel - a suitably-formatted phone number, an email address, or twitter handle (which will be converted to a corresponding hashtag)';
+$lang['help_address']='This can be for any supported channel - a suitably-formatted phone number, an email address, or twitter handle (which will be converted to a corresponding hashtag).';
+$lang['help_address2']='To test an SMS, the following phone-parameters are also required. Displayed values are module-defaults, which can be adjusted for the test.';
+$lang['help_smspattern']='Regular-expression - see <a href="http://www.regexlib.net/Search.aspx?k=phone">this documentation</a>, for example';
+$lang['help_smsprefix']='Number, no leading \'+\' - lookup <a href="http://www.countrycallingcodes.com/countrylist.php">here</a>';
 
 $lang['installed']='Module version %s installed.';
 
+$lang['message_sent']='Test message sent, check whether it arrived';
 $lang['moddescription']='Notifier provides an interface for other modules to conveniently send messages';
 
 $lang['no']='no';
@@ -61,6 +66,8 @@ $lang['title_maintab']='Channels';
 $lang['title_settingstab']='Settings';
 $lang['title_testtab']='Test';
 $lang['title_password']='Pass-phrase for securing sensitive data';
+$lang['title_smspattern']='Validator for phone numbers suitable for receiving test-SMS';
+$lang['title_smsprefix']='Country-prefix for phone numbers to receive test-SMS';
 
 $lang['uninstalled']='Module uninstalled.';
 $lang['upgraded']='Module upgraded to version %s.';
