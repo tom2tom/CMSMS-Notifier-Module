@@ -19,18 +19,17 @@ class MessageSender
 	ValidateAddress:
 	Check that @address is suitable for sending message via a supported channel
 	@address: The phone/address/handle to check
-	@prefix: default country-code for phone-numbers to receive text
 	@pattern: regex for matching acceptable phone nos, defaults to module preference
 	Returns: enum (1=phone,2=email,3=handle) if valid, FALSE if not
 	*/
-	public function ValidateAddress($address,$prefix,$pattern)
+	public function ValidateAddress($address,$pattern)
 	{
 		if(!$this->text)
 		{
 			try { $this->text = new SMSSender(); }
 			catch (NoHelperException $e) {}
 		}
-		if($this->text && $this->text->ValidateAddress($address,$prefix,$pattern))
+		if($this->text && $this->text->ValidateAddress($address,$pattern))
 			return 1;
 
 		if(!$this->mail)
