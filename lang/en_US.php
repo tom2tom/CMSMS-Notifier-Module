@@ -97,7 +97,7 @@ One twitter account (@CMSMSNotifier) has authorised that app, and any other acco
 </ul>
 before the account is used.<br />
 For the latter, you can create, and at least temporarily enable, a page with tag<br />
-<code>{cms_module module='Notifier'}</code></br />
+<code>{Notifier action='twitaccount' connect=1}</code></br />
 and refer the account holder there.<br />
 Then create and supply tweet parameters (credentials, hashtags, other content) like<br />
 <code>\$o = new TweetSender(); \$o-&gt;Send(\$parameters-array);</code>
