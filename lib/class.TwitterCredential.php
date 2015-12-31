@@ -27,8 +27,8 @@ class TwitterCredential extends NTwitter
 				$url = 'https://api.twitter.com/oauth/authenticate'.
 					'?oauth_consumer_key='.$this->consumer->key.
 					'&oauth_token='.$token['oauth_token'].
-					'&oauth_token_secret='.$token['oauth_token_secret'].
-					'&force_login=1';
+//					'&oauth_token_secret='.$token['oauth_token_secret'].
+					'&force_login=true';
 				if($name)
 					$url .= '&screen_name='.$name;
 				header('Location: '.$url);
