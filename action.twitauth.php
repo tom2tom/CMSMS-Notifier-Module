@@ -1,7 +1,7 @@
 <?php
 #----------------------------------------------------------------------
 # Module: Notifier - a communications module
-# Action: twitaccount - get credentials for and authorize a non-default twitter account
+# Action: twitauth - get credentials for and authorize a non-default twitter account
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
@@ -9,7 +9,7 @@
 try
 {
 	$twt = new TweetSender($this);
-	if(isset($params['connect'])) //action initiated
+	if(isset($params['start'])) //action initiated
 	{
 		list($apipublic,$apiprivate) = $twt->ModuleAppTokens();
 		try
@@ -25,7 +25,7 @@ try
 			}
 			else
 			{
-				$url = $this->CreateLink($id,'twitaccount',NULL,NULL,array(),NULL,TRUE);
+				$url = $this->CreateLink($id,'twitauth',NULL,NULL,array(),NULL,TRUE);
 				$callback = str_replace('amp;','',$url);
 			}
 			$message = $conn->gogetToken($callback); //should redirect to get token
@@ -79,13 +79,13 @@ catch (NoHelperException $e)
 	$message = $e->getMessage();
 }
 
-$smarty->assign('startform',$this->CreateFormStart($id,'twitaccount',$returnid));
+$smarty->assign('startform',$this->CreateFormStart($id,'twitauth',$returnid));
 $smarty->assign('endform',$this->CreateFormEnd());
 if(!empty($message))
 	$smarty->assign('message',$message); //tell about success or failure
 $smarty->assign('icon',$this->GetModuleURLPath().'/images/oauth.png');
 $smarty->assign('title',$this->Lang('title_auth'));
-$smarty->assign('submit',$this->CreateInputSubmit($id,'connect',$this->Lang('connect')));
+$smarty->assign('submit',$this->CreateInputSubmit($id,'start',$this->Lang('connect')));
 
 echo $this->ProcessTemplate('tweet_auth.tpl');
 
