@@ -179,7 +179,6 @@ class Notifier extends CMSModule
 		$this->SetParameterType('connect',CLEAN_NONE);
 		$this->SetParameterType('oauth_token',CLEAN_STRING);
 		$this->SetParameterType('oauth_verifier',CLEAN_STRING);
-		//TODO route
 	}
 
 	//partial setup for pre-1.10, backend setup for 1.10+
