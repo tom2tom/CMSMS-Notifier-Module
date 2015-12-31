@@ -176,7 +176,7 @@ class Notifier extends CMSModule
 		$this->RegisterModulePlugin();
 		$this->RestrictUnknownParams();
 		//twitter authorisation
-		$this->SetParameterType('connect',CLEAN_NONE);
+		$this->SetParameterType('start',CLEAN_NONE);
 		$this->SetParameterType('oauth_token',CLEAN_STRING);
 		$this->SetParameterType('oauth_verifier',CLEAN_STRING);
 	}
@@ -192,8 +192,8 @@ class Notifier extends CMSModule
 		//diversions
 		switch ($name)
 		{
-		 case 'connect':
-			$name = 'twitaccount';
+		 case 'start':
+			$name = 'twitauth';
 			break;
 		}
 		parent::DoAction($name,$id,$params,$returnid);

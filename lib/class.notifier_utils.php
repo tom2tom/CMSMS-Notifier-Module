@@ -428,7 +428,7 @@ class notifier_utils
 	function get_auth($id='m1_',$returnid = '')
 	{
 		$mod = cms_utils::get_module('Notifier'); //self
-		$mod->DoAction('twitaccount',$id,array('connect'=>1),$returnid);
+		$mod->DoAction('twitauth',$id,array('start'=>1),$returnid);
 	}
 
 }

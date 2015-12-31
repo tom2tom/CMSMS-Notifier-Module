@@ -11,8 +11,6 @@ if(isset($_REQUEST['oauth_token'])) //authorisation was completed
 	//preserve values across redirection
 	$params['oauth_token'] = $_REQUEST['oauth_token'];
 	$params['oauth_verifier'] = $_REQUEST['oauth_verifier'];
-//	$this->Redirect($id,'twitaccount','',$params);
 }
-$this->Redirect($id,'twitaccount','',$params);
-//exit;
+$this->Redirect($id,'twitauth','',$params);
 ?>

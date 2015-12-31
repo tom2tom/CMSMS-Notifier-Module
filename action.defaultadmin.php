@@ -95,7 +95,7 @@ if(!empty($params['message']))
 	$smarty->assign('message',$params['message']);
 
 $smarty->assign('tabstart_main',$this->StartTab('main'));
-$smarty->assign('formstart_main',$this->CreateFormStart($id,'twitaccount'));
+$smarty->assign('formstart_main',$this->CreateFormStart($id,'twitauth'));
 
 $details = array();
 $mod = cms_utils::get_module('SMSG');
@@ -214,7 +214,7 @@ $channeldata[2][] = array(
 	$this->Lang('channel_tweet_from','@CMSMSNotifier').'.',
 	$from,
 	'',
-	$this->CreateInputSubmit($id,'connect',$this->Lang('authorise'),'title="'.$this->Lang('authorise_tip').'"')
+	$this->CreateInputSubmit($id,'start',$this->Lang('authorise'),'title="'.$this->Lang('authorise_tip').'"')
 );
 $smarty->assign('channels',$channeldata);
 
@@ -248,7 +248,7 @@ $smarty->assign('input_password',
 	$this->CreateTextArea(false,$id,$pw,'masterpass','cloaked',
 		$id.'passwd','','',40,2));
 
-$jsincs[] = '<script type="text/javascript" src="'.$baseurl.'/include/jquery.inputcloak.min.js"></script>';
+$jsincs[] = '<script type="text/javascript" src="'.$baseurl.'/include/jquery-inputCloak.min.js"></script>';
 $jsloads[] = <<<EOS
  $('#{$id}passwd').inputCloak({
   type:'see4',
