@@ -196,7 +196,7 @@ else
 $channeldata[1][] = $this->Lang('channel_email_title');
 $channeldata[1][] = $details;
 
-$details = $db->GetCol('SELECT handle FROM '.cms_db_prefix().' WHERE pubtoken<>"" AND privtoken<>""');
+$details = $db->GetCol('SELECT handle FROM '.cms_db_prefix().'module_tell_tweeter WHERE pubtoken<>"" AND privtoken<>""');
 if($details)
 {
 	$t = '<ul>';
