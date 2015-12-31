@@ -98,8 +98,7 @@ class notifier_utils
 	}
 
 	/**
-	data adapted from www.idd.com.au/telephone-country-codes.php
-	and www.geonames.org
+	data adapted from www.idd.com.au/telephone-country-codes.php and www.geonames.org
 	Returns: array
 	*/
 	function allprefix()
@@ -421,6 +420,17 @@ class notifier_utils
 			return $p[0];
 		return $p;
 	}
+
+	/**
+	wrapper for mechanism to get twitter authorisation
+	Returns: nope - redirects instead
+	*/
+	function get_auth($id='m1_',$returnid = '')
+	{
+		$mod = cms_utils::get_module('Notifier'); //self
+		$mod->DoAction('twitaccount',$id,array('connect'=>1),$returnid);
+	}
+
 }
 
 ?>
