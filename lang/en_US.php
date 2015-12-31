@@ -13,14 +13,14 @@ $lang['channel_email_yes']='Emails can be sent';
 
 $lang['channel_text_gate']='The gateway is %s';
 $lang['channel_text_no']='Text messages CANNOT be sent';
-$lang['channel_text_properties']='Gateway parameters are:<br />%s';
+$lang['channel_text_properties']='Gateway parameters:<br />%s';
 $lang['channel_text_title']='SMS';
 $lang['channel_text_yes']='Text messages can be sent';
 
 $lang['channel_tweet_from']='The default poster is %s';
 $lang['channel_tweet_no']='Tweets CANNOT be posted';
 $lang['channel_tweet_others_none']='No other poster is registered';
-$lang['channel_tweet_others']='Other registered posters are:<br />%s';
+$lang['channel_tweet_others']='Other registered posters:<br />%s';
 $lang['channel_tweet_title']='Tweet';
 $lang['channel_tweet_yes']='Tweets can be posted';
 
@@ -57,7 +57,7 @@ $lang['postinstall']='Notifications module has been installed. Remember to apply
 $lang['postuninstall']='Notifications module has been uninstalled.';
 
 $lang['send']='Send';
-$lang['status_complete']='Completed';
+$lang['status_complete']='Registration completed for %s';
 $lang['submit']='Save';
 
 $lang['title_address']='Destination';
