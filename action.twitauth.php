@@ -59,7 +59,12 @@ try
 			{
 				if($twt->SaveTokens($token['screen_name'],
 						$token['oauth_token'],$token['oauth_token_secret']))
-					$message = $this->Lang('status_complete',$token['screen_name']);
+				{
+					$smarty->assign('title',$this->Lang('status_complete',$token['screen_name']);
+					$smarty->assign('icon',$this->GetModuleURLPath().'/images/oauth.png');
+					echo $this->ProcessTemplate('tweet_auth.tpl');
+					return;
+				}
 				else
 					$message = $this->Lang('err_data_type',$this->Lang('err_token'));
 			}
