@@ -14,10 +14,10 @@ postgres supported pre-1.11
 $ftype = (preg_match('/mysql/i',$config['dbms'])) ? 'VARBINARY(256)':'BIT VARYING(2048)';
 */
 $flds = "
-	auth_id I(4) AUTO KEY,
-	handle C(20),
-	pubtoken C(72),
-	privtoken C(512)
+auth_id I(4) AUTO KEY,
+handle C(20),
+pubtoken C(72),
+privtoken C(512)
 ";
 $tblname = cms_db_prefix().'module_tell_tweeter';
 $sql = $dict->CreateTableSQL($tblname,$flds,$taboptarray);

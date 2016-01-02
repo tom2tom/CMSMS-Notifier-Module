@@ -22,7 +22,7 @@ class Notifier extends CMSModule
 	public $havemcrypt;
 	public $before20;
 
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
 		$this->havemcrypt = (function_exists('mcrypt_encrypt'));
