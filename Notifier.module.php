@@ -11,7 +11,7 @@
 #
 # This module is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Affero General Public License for more details.
 # Read the License online: http://www.gnu.org/licenses/licenses.html#AGPL
 #-----------------------------------------------------------------------
@@ -143,16 +143,15 @@ class Notifier extends CMSModule
 		 || $this->CheckPermission('SeeNotifierProperties'));
 	}
 
-/*	function GetHeaderHTML()
+	function GetHeaderHTML()
+	{
+		return '<link rel="stylesheet" type="text/css" id="adminstyler" href="'.$this->GetModuleURLPath().'/css/admin.css" />';
+	}
+
+/*	function AdminStyle()
 	{
 	}
 */
-	function AdminStyle()
-	{
-		$fn = cms_join_path(dirname(__FILE__),'css','admin.css');
-		return ''.@file_get_contents($fn);
-	}
-
 	function SupportsLazyLoading()
 	{
 		return TRUE;

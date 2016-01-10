@@ -15,7 +15,7 @@ try
 		try
 		{
 			$conn = new TwitterCredential($apipublic,$apiprivate);
-			if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')
+			if(empty($_SERVER['HTTPS']))
 			{
 				//cleanup & force a secure return-communication, which freaks the browser
 				//first-time, AND stuffs up on-page-include-URLs, requiring a local redirect
@@ -60,7 +60,7 @@ try
 				if($twt->SaveTokens($token['screen_name'],
 						$token['oauth_token'],$token['oauth_token_secret']))
 				{
-					$smarty->assign('title',$this->Lang('status_complete',$token['screen_name']);
+					$smarty->assign('title',$this->Lang('status_complete',$token['screen_name']));
 					$smarty->assign('icon',$this->GetModuleURLPath().'/images/oauth.png');
 					echo $this->ProcessTemplate('tweet_auth.tpl');
 					return;
