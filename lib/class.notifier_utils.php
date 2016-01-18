@@ -98,6 +98,41 @@ class notifier_utils
 	}
 
 	/**
+	ProcessTemplate:
+	@mod: reference to current Notifier module object
+	@tplname: template identifier
+	@tplvars: associative array of template variables
+	@cache: optional boolean, default TRUE
+	Returns: string, processed template
+	*/
+	public static function ProcessTemplate(&$mod,$tplname,$tplvars,$cache=TRUE)
+	{
+		global $smarty;
+		if($mod->before20)
+		{
+			$smarty->assign($tplvars);
+			echo $mod->ProcessTemplate($tplname);
+		}
+		else
+		{
+			if($cache)
+			{
+				$cache_id = md5('smsg'.$tplname.serialize(array_keys($tplvars)));
+				$lang = CmsNlsOperations::get_current_language();
+				$compile_id = md5('smsg'.$tplname.$lang);
+				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname),$cache_id,compile_id,$smarty);
+				if(!$tpl->isCached())
+					$tpl->assign($tplvars);
+			}
+			else
+			{
+				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname),NULL,NULL,$smarty,$tplvars);
+			}
+			$tpl->display();
+		}
+	}
+
+	/**
 	data adapted from www.idd.com.au/telephone-country-codes.php and www.geonames.org
 	Returns: array
 	*/
