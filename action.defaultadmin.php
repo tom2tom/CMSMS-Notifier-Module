@@ -79,7 +79,7 @@ $t = $this->StartTabHeaders().
  $this->SetTabHeader('main',$this->Lang('title_maintab'),$indx==0).
  $this->SetTabHeader('test',$this->Lang('title_testtab'),$indx==1).
  $this->SetTabHeader('settings',$this->Lang('title_settingstab'),$indx==2).
- $this->EndTabHeaders().$this->StartTabContent());
+ $this->EndTabHeaders().$this->StartTabContent();
 
 //NOTE CMSMS 2+ barfs if EndTab() is called before EndTabContent() - some craziness there !!!
 $tplvars = array(
@@ -253,7 +253,7 @@ if($pw)
 
 $tplvars['input_password'] = 
 	$this->CreateTextArea(false,$id,$pw,'masterpass','cloaked',
-		$id.'passwd','','',40,2));
+		$id.'passwd','','',40,2);
 
 $jsincs[] = '<script type="text/javascript" src="'.$baseurl.'/include/jquery-inputCloak.min.js"></script>';
 $jsloads[] = <<<EOS
