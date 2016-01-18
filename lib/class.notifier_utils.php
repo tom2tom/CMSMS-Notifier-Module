@@ -117,10 +117,10 @@ class notifier_utils
 		{
 			if($cache)
 			{
-				$cache_id = md5('smsg'.$tplname.serialize(array_keys($tplvars)));
+				$cache_id = md5('tell'.$tplname.serialize(array_keys($tplvars)));
 				$lang = CmsNlsOperations::get_current_language();
-				$compile_id = md5('smsg'.$tplname.$lang);
-				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname),$cache_id,compile_id,$smarty);
+				$compile_id = md5('tell'.$tplname.$lang);
+				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname),$cache_id,$compile_id,$smarty);
 				if(!$tpl->isCached())
 					$tpl->assign($tplvars);
 			}
