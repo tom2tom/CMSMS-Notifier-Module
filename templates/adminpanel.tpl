@@ -6,7 +6,8 @@
 {foreach from=$channels item=group}<fieldset style="margin:0;padding:0 1em;">
 <legend>{$group[0]}</legend>
 {foreach from=$group[1] item=row}{if $row}<p>{$row}</p>{else}<br />{/if}{/foreach}
-</fieldset>{/foreach}
+</fieldset><br />
+{/foreach}
 </div>
 {$form_end}
 {$tab_end}
