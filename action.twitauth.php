@@ -60,9 +60,11 @@ try
 				if($twt->SaveTokens($token['screen_name'],
 						$token['oauth_token'],$token['oauth_token_secret']))
 				{
-					$smarty->assign('title',$this->Lang('status_complete',$token['screen_name']));
-					$smarty->assign('icon',$this->GetModuleURLPath().'/images/oauth.png');
-					echo $this->ProcessTemplate('tweet_auth.tpl');
+					$tplvars = array(
+						'title' => $this->Lang('status_complete',$token['screen_name']),
+						'icon' => $this->GetModuleURLPath().'/images/oauth.png')
+					);
+					notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
 					return;
 				}
 				else
@@ -84,14 +86,16 @@ catch (NoHelperException $e)
 	$message = $e->getMessage();
 }
 
-$smarty->assign('startform',$this->CreateFormStart($id,'twitauth',$returnid));
-$smarty->assign('endform',$this->CreateFormEnd());
+$tplvars = array(
+	'startform' => $this->CreateFormStart($id] = 'twitauth',$returnid),
+	'endform' => $this->CreateFormEnd(),
+	'icon' => $this->GetModuleURLPath().'/images/oauth.png',
+	'title' => $this->Lang('title_auth'),
+	'submit' => $this->CreateInputSubmit($id,'start',$this->Lang('connect'))
+);
 if(!empty($message))
-	$smarty->assign('message',$message); //tell about success or failure
-$smarty->assign('icon',$this->GetModuleURLPath().'/images/oauth.png');
-$smarty->assign('title',$this->Lang('title_auth'));
-$smarty->assign('submit',$this->CreateInputSubmit($id,'start',$this->Lang('connect')));
+	$tplvars['message'] = $message; //tell about success or failure
 
-echo $this->ProcessTemplate('tweet_auth.tpl');
+notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
 
 ?>

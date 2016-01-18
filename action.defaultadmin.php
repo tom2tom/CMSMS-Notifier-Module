@@ -75,16 +75,19 @@ if(isset($params['activetab']))
 	}
 }
 
-$smarty->assign('tabsheader',$this->StartTabHeaders().
+$t = $this->StartTabHeaders().
  $this->SetTabHeader('main',$this->Lang('title_maintab'),$indx==0).
  $this->SetTabHeader('test',$this->Lang('title_testtab'),$indx==1).
  $this->SetTabHeader('settings',$this->Lang('title_settingstab'),$indx==2).
  $this->EndTabHeaders().$this->StartTabContent());
 
 //NOTE CMSMS 2+ barfs if EndTab() is called before EndTabContent() - some craziness there !!!
-$smarty->assign('tabsfooter',$this->EndTabContent());
-$smarty->assign('tab_end',$this->EndTab());
-$smarty->assign('form_end',$this->CreateFormEnd());
+$tplvars = array(
+	'tabsheader' => $t,
+	'tabsfooter' => $this->EndTabContent(),
+	'tab_end' => $this->EndTab(),
+	'form_end' => $this->CreateFormEnd()
+);
 
 $jsincs = array();
 $jsfuncs = array();
@@ -92,10 +95,10 @@ $jsloads = array();
 $baseurl = $this->GetModuleURLPath();
 
 if(!empty($params['message']))
-	$smarty->assign('message',$params['message']);
+	$tplvars['message'] = $params['message'];
 
-$smarty->assign('tabstart_main',$this->StartTab('main'));
-$smarty->assign('formstart_main',$this->CreateFormStart($id,'twitauth'));
+$tplvars['tabstart_main'] = $this->StartTab('main');
+$tplvars['formstart_main'] = $this->CreateFormStart($id,'twitauth');
 
 $details = array();
 $mod = cms_utils::get_module('SMSG');
@@ -216,35 +219,39 @@ $channeldata[2][] = array(
 	'',
 	$this->CreateInputSubmit($id,'start',$this->Lang('authorise'),'title="'.$this->Lang('authorise_tip').'"')
 );
-$smarty->assign('channels',$channeldata);
 
-$smarty->assign('tabstart_test',$this->StartTab('test'));
-$smarty->assign('formstart_test',$this->CreateFormStart($id,'test'));
-
-$smarty->assign('title_address',$this->Lang('title_address'));
 $t = (isset($params['address'])) ? $params['address']:'';
-$smarty->assign('input_address',$this->CreateInputText($id,'address',$t,30,50));
-$smarty->assign('help_address',$this->Lang('help_address'));
-$smarty->assign('help_address2',$this->Lang('help_address2'));
-$smarty->assign('send',$this->CreateInputSubmit($id,'send',$this->Lang('send')));
 
-$smarty->assign('tabstart_settings',$this->StartTab('settings'));
-$smarty->assign('formstart_settings',$this->CreateFormStart($id,'defaultadmin'));
+$tplvars += array(
+	'channels' => $channeldata,
 
-$smarty->assign('title_smspattern',$this->Lang('title_smspattern'));
-$smarty->assign('input_smspattern',$this->CreateInputText($id,'smspattern',$this->GetPreference('smspattern'),20,30));
-$smarty->assign('help_smspattern',$this->Lang('help_smspattern'));
+	'tabstart_test' => $this->StartTab('test'),
+	'formstart_test' => $this->CreateFormStart($id,'test'),
 
-$smarty->assign('title_smsprefix',$this->Lang('title_smsprefix'));
-$smarty->assign('input_smsprefix',$this->CreateInputText($id,'smsprefix',$this->GetPreference('smsprefix'),4,5));
-$smarty->assign('help_smsprefix',$this->Lang('help_smsprefix'));
+	'title_address' => $this->Lang('title_address'),
+	'input_address' => $this->CreateInputText($id,'address',$t,30,50),
+	'help_address' => $this->Lang('help_address'),
+	'help_address2' => $this->Lang('help_address2'),
+	'send' => $this->CreateInputSubmit($id,'send',$this->Lang('send')),
 
-$smarty->assign('title_password',$this->Lang('title_password'));
+	'tabstart_settings' => $this->StartTab('settings'),
+	'formstart_settings' => $this->CreateFormStart($id,'defaultadmin'),
+
+	'title_smspattern' => $this->Lang('title_smspattern'),
+	'input_smspattern' => $this->CreateInputText($id,'smspattern',$this->GetPreference('smspattern'),20,30),
+	'help_smspattern' => $this->Lang('help_smspattern'),
+
+	'title_smsprefix' => $this->Lang('title_smsprefix'),
+	'input_smsprefix' => $this->CreateInputText($id,'smsprefix',$this->GetPreference('smsprefix'),4,5),
+	'help_smsprefix' => $this->Lang('help_smsprefix'),
+
+	'title_password' => $this->Lang('title_password')
+);
 $pw = $this->GetPreference('masterpass');
 if($pw)
 	$pw = $funcs->unfusc($pw);
 
-$smarty->assign('input_password',
+$tplvars['input_password'] = 
 	$this->CreateTextArea(false,$id,$pw,'masterpass','cloaked',
 		$id.'passwd','','',40,2));
 
@@ -259,22 +266,21 @@ EOS;
 
 if($pmod)
 {
-	$smarty->assign('submit',$this->CreateInputSubmit($id,'submit',$this->Lang('submit')));
-	$smarty->assign('cancel',$this->CreateInputSubmit($id,'cancel',$this->Lang('cancel')));
+	$tplvars['submit'] = $this->CreateInputSubmit($id,'submit',$this->Lang('submit'));
+	$tplvars['cancel'] = $this->CreateInputSubmit($id,'cancel',$this->Lang('cancel'));
 }
 
 if($jsloads)
 {
-	$jsfuncs[] = '
-$(document).ready(function() {
+	$jsfuncs[] = '$(document).ready(function() {
 ';
 	$jsfuncs = array_merge($jsfuncs,$jsloads);
 	$jsfuncs[] = '});
 ';
 }
-$smarty->assign('jsfuncs',$jsfuncs);
-$smarty->assign('jsincs',$jsincs);
+$tplvars['jsfuncs'] = $jsfuncs;
+$tplvars['jsincs'] = $jsincs;
 
-echo $this->ProcessTemplate('adminpanel.tpl');
+notifier_utils::ProcessTemplate($this,'adminpanel.tpl',$tplvars);
 
 ?>
