@@ -62,7 +62,7 @@ try
 				{
 					$tplvars = array(
 						'title' => $this->Lang('status_complete',$token['screen_name']),
-						'icon' => $this->GetModuleURLPath().'/images/oauth.png')
+						'icon' => $this->GetModuleURLPath().'/images/oauth.png'
 					);
 					notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
 					return;
@@ -87,7 +87,7 @@ catch (NoHelperException $e)
 }
 
 $tplvars = array(
-	'startform' => $this->CreateFormStart($id] = 'twitauth',$returnid),
+	'startform' => $this->CreateFormStart($id,'twitauth',$returnid),
 	'endform' => $this->CreateFormEnd(),
 	'icon' => $this->GetModuleURLPath().'/images/oauth.png',
 	'title' => $this->Lang('title_auth'),
