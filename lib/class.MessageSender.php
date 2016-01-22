@@ -16,6 +16,29 @@ class MessageSender
 	public $tweet = FALSE;
 
 	/**
+	Load:
+	Get available channel classes
+	*/
+	public function Load()
+	{
+		if(!$this->text)
+		{
+			try { $this->text = new SMSSender(); }
+			catch (NoHelperException $e) {}
+		}
+		if(!$this->mail)
+		{
+			try { $this->mail = new EmailSender(); }
+			catch (NoHelperException $e) {}
+		}
+		if(!$this->tweet)
+		{
+			try { $this->tweet = new TweetSender(); }
+			catch (NoHelperException $e) {}
+		}
+	}
+
+	/**
 	ValidateAddress:
 	Check that @address is suitable for sending message via a supported channel.
 	@address: The phone/address/handle to check, or (possibly mixed-type) array of them
