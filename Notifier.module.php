@@ -193,6 +193,7 @@ class Notifier extends CMSModule
 		{
 		 case 'start':
 			$name = 'twitauth';
+			$params['start'] = 1; //in case this is external-initiated
 			break;
 		}
 		parent::DoAction($name,$id,$params,$returnid);
