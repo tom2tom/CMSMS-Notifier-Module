@@ -32,7 +32,7 @@ class EmailSender
 
 	/**
 	DoSend:
-	Sends email notice(s) about a match
+	Sends email(s)
 	@mod: reference to current module object
 	@subject: email subject
 	@to: array of destinations, or FALSE (in which case @cc will be substituted if possible).
@@ -166,10 +166,11 @@ class EmailSender
 
 	/**
 	ValidateAddress:
-	Check whether @address is or includes string[s] roughly like a valid email address
-	@address: (scalar or array) destination to check, if scalar it may have
-	','-separated multiple destinations
-	Returns: a trimmed valid email address, or array of them, or FALSE
+	Check whether @address is or includes string(s) like a valid email address
+	@address: destination to check (scalar or array). If scalar it may have
+	','-separated multiple destinations, if array then non-numeric keys are assumed
+	to be receiver-names and any duplication will be removed
+	Returns: array of trimmed valid email address(es), or FALSE
 	*/
 	public function ValidateAddress($address)
 	{
@@ -184,26 +185,34 @@ class EmailSender
 				if(preg_match($pattern,$to))
 				{
 					$this->skips = FALSE;
-					return $to;
+					return array($to);
 				}
 				$this->skips = array($to);
 				return FALSE;
 			}
 			$address = explode(',',$address);
 		}
-		$valid = array();
+		$named = array();
+		$anon = array();
 		$skips = array();
 		foreach($address as $name=>$addr)
 		{
 			$to = trim($addr);
 			if(preg_match($pattern,$to))
-				$valid[$name] = $to;
+			{
+				if(!is_numeric($name))
+					$named[$name] = $to;
+				else
+					$anon[] = $to;
+			}
 			else
 				$skips[] = $to;
 		}
 		$this->skips = $skips;
-		if($valid)
-			return $valid; //no unique: allow address-repeats with different keys
+		if($anon)
+			$anon = array_unique($anon)
+		if($named || $anon)
+			return array_merge($named,$anon);
 		return FALSE;
 	}
 }

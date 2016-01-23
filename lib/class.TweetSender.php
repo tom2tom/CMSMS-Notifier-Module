@@ -146,10 +146,10 @@ class TweetSender
 
 	/**
 	ValidateAddress:
-	Check whether @address is or includes valid twitter handle[s]
-	@address: (scalar or array) destination to check, if scalar it may have
-	','-separated multiple destinations
-	Returns: a trimmed valid twitter handle, or array of them, or FALSE
+	Check whether @address is or includes valid twitter handle(s)
+	@address: destination to check (scalar or array). If scalar it may have
+	','-separated multiple destinations.
+	Returns: array of trimmed valid twitter handle(s), or FALSE
 	*/
 	public function ValidateAddress($address)
 	{
@@ -162,7 +162,7 @@ class TweetSender
 				if(preg_match($pattern,$to))
 				{
 					$this->skips = FALSE;
-					return $to;
+					return array($to);
 				}
 				$this->skips = array($to);
 				return FALSE;

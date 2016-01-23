@@ -148,12 +148,11 @@ class SMSSender
 
 	/**
 	ValidateAddress:
-	Check whether @address is or includes valid phone number[s].
-	@address: (scalar or array) destination to check, if scalar it may have
-	','-separated multiple destinations
-	@pattern: regex for matching acceptable phone nos (applied after any whitespace is removed,
-	 before any prefix-adjustment)
-	Returns: a trimmed valid phone no., or array of them, or FALSE
+	Check whether @address is or includes valid phone number(s).
+	@address: destination to check (scalar or array). If scalar it may have
+	','-separated multiple destinations.
+	@pattern: regex for matching acceptable phone nos (to be applied after any whitespace is removed)
+	Returns: array of trimmed valid phone no(s), or FALSE
 	*/
 	public function ValidateAddress($address,$pattern)
 	{
@@ -167,7 +166,7 @@ class SMSSender
 			{
 				$to = str_replace(' ','',$address);
 				if(preg_match($pattern,$to))
-					return $to;
+					return array($to);
 				$this->skips = array(trim($address));
 				return FALSE;
 			}
