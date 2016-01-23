@@ -210,7 +210,7 @@ class EmailSender
 		}
 		$this->skips = $skips;
 		if($anon)
-			$anon = array_unique($anon)
+			$anon = array_unique($anon);
 		if($named || $anon)
 			return array_merge($named,$anon);
 		return FALSE;
