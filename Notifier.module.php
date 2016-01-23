@@ -1,7 +1,7 @@
 <?php
 #------------------------------------------------------------------------
 # Module: Notifier- a message-sending booking module for CMS Made Simple
-# Mostly copyright (C) 2015-2016 Tom Phane <@>
+# Mostly copyright (C) 2016 Tom Phane <@>
 # This project's forge-page is: http://dev.cmsmadesimple.org/projects/notifier
 #
 # This module is free software. You can redistribute it and/or modify it under
@@ -64,7 +64,7 @@ class Notifier extends CMSModule
 
 	function GetVersion()
 	{
-		return '0.1';
+		return '0.2';
 	}
 
 	function GetAuthor()
