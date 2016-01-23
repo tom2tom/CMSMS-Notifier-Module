@@ -149,7 +149,8 @@ class SMSSender
 	/**
 	ValidateAddress:
 	Check whether @address is or includes valid phone number[s].
-	@address: destination to check, or array of them
+	@address: (scalar or array) destination to check, if scalar it may have
+	','-separated multiple destinations
 	@pattern: regex for matching acceptable phone nos (applied after any whitespace is removed,
 	 before any prefix-adjustment)
 	Returns: a trimmed valid phone no., or array of them, or FALSE
@@ -162,27 +163,29 @@ class SMSSender
 		$pattern = '~'.$pattern.'~';
 		if(!is_array($address))
 		{
-			$to = str_replace(' ','',$address);
-			if(preg_match($pattern,$to))
-				return $to;
-			$this->skips = array(trim($address));
-		}
-		else
-		{
-			$valid = array();
-			$skips = array();
-			foreach($address as $one)
+			if(strpos($address,',') === FALSE)
 			{
-				$to = str_replace(' ','',$one);
+				$to = str_replace(' ','',$address);
 				if(preg_match($pattern,$to))
-					$valid[] = $to;
-				else
-					$skips = trim($one);
+					return $to;
+				$this->skips = array(trim($address));
+				return FALSE;
 			}
-			$this->skips = $skips;
-			if($valid)
-				return array_unique($valid);
+			$address = explode(',',$address);
 		}
+		$valid = array();
+		$skips = array();
+		foreach($address as $one)
+		{
+			$to = str_replace(' ','',$one);
+			if(preg_match($pattern,$to))
+				$valid[] = $to;
+			else
+				$skips = trim($one);
+		}
+		$this->skips = $skips;
+		if($valid)
+			return array_unique($valid);
 		return FALSE;
 	}
 }

@@ -167,7 +167,8 @@ class EmailSender
 	/**
 	ValidateAddress:
 	Check whether @address is or includes string[s] roughly like a valid email address
-	@address: destination to check, or array of them
+	@address: (scalar or array) destination to check, if scalar it may have
+	','-separated multiple destinations
 	Returns: a trimmed valid email address, or array of them, or FALSE
 	*/
 	public function ValidateAddress($address)
@@ -177,31 +178,32 @@ class EmailSender
 		$pattern = '/.+@.+\..+/';
 		if(!is_array($address))
 		{
-			$to = trim($address);
-			if(preg_match($pattern,$to))
+			if(strpos($address,',') === FALSE)
 			{
-				$this->skips = FALSE;
-				return $to;
-			}
-			else
-				$this->skips = array($to);
-		}
-		else
-		{
-			$valid = array();
-			$skips = array();
-			foreach($address as $name=>$addr)
-			{
-				$to = trim($addr);
+				$to = trim($address);
 				if(preg_match($pattern,$to))
-					$valid[$name] = $to;
-				else
-					$skips[] = $to;
+				{
+					$this->skips = FALSE;
+					return $to;
+				}
+				$this->skips = array($to);
+				return FALSE;
 			}
-			$this->skips = $skips;
-			if($valid)
-				return $valid; //allow address-repeats with different keys
+			$address = explode(',',$address);
 		}
+		$valid = array();
+		$skips = array();
+		foreach($address as $name=>$addr)
+		{
+			$to = trim($addr);
+			if(preg_match($pattern,$to))
+				$valid[$name] = $to;
+			else
+				$skips[] = $to;
+		}
+		$this->skips = $skips;
+		if($valid)
+			return $valid; //no unique: allow address-repeats with different keys
 		return FALSE;
 	}
 }

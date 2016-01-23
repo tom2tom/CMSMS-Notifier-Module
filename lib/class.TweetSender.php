@@ -147,7 +147,8 @@ class TweetSender
 	/**
 	ValidateAddress:
 	Check whether @address is or includes valid twitter handle[s]
-	@address: destination to check, or array of them
+	@address: (scalar or array) destination to check, if scalar it may have
+	','-separated multiple destinations
 	Returns: a trimmed valid twitter handle, or array of them, or FALSE
 	*/
 	public function ValidateAddress($address)
@@ -155,31 +156,32 @@ class TweetSender
 		$pattern = '/^@\w{1,15}$/';
 		if(!is_array($address))
 		{
-			$to = trim($address);
-			if(preg_match($pattern,$to))
+			if(strpos($address,',') === FALSE)
 			{
-				$this->skips = FALSE;
-				return $to;
-			}
-			else
-				$this->skips = array($to);
-		}
-		else
-		{
-			$valid = array();
-			$skips = array();
-			foreach($address as $one)
-			{
-				$to = trim($one);
+				$to = trim($address);
 				if(preg_match($pattern,$to))
-					$valid[] = $to;
-				else
-					$skips[] = $to;
+				{
+					$this->skips = FALSE;
+					return $to;
+				}
+				$this->skips = array($to);
+				return FALSE;
 			}
-			$this->skips = $skips;
-			if($valid)
-				return array_unique($valid);
+			$address = explode(',',$address);
 		}
+		$valid = array();
+		$skips = array();
+		foreach($address as $one)
+		{
+			$to = trim($one);
+			if(preg_match($pattern,$to))
+				$valid[] = $to;
+			else
+				$skips[] = $to;
+		}
+		$this->skips = $skips;
+		if($valid)
+			return array_unique($valid);
 		return FALSE;
 	}
 
