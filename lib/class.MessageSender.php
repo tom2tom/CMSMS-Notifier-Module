@@ -43,8 +43,8 @@ class MessageSender
 	Check that @address is suitable for sending message via a supported channel.
 	@address: The phone/address/handle to check, or (possibly mixed-type) array of them
 	@pattern: optional regex for matching acceptable phone nos, defaults to module preference
-	Returns: associative array with key(s) 'text','email','tweet' as appropriate,
-	  and corresponding array(s) of clean address(es)
+	Returns: associative array with keys 'text','email','tweet', and corresponding
+		members an array of clean address(es), or FALSE
 	*/
 	public function ValidateAddress($address,$pattern=FALSE)
 	{
@@ -54,36 +54,21 @@ class MessageSender
 			try { $this->text = new SMSSender(); }
 			catch (NoHelperException $e) {}
 		}
-		if($this->text)
-		{
-			$clean = $this->text->ValidateAddress($address,$pattern);
-			if($clean)
-				$to['text'] = $clean;
-		}
+		$to['text'] = ($this->text) ? $this->text->ValidateAddress($address,$pattern) : FALSE;
 
 		if(!$this->mail)
 		{
 			try { $this->mail = new EmailSender(); }
 			catch (NoHelperException $e) {}
 		}
-		if($this->mail)
-		{
-			$clean = $this->mail->ValidateAddress($address);
-			if($clean)
-				$to['email'] = $clean;
-		}
+		$to['email'] = ($this->mail) ? $this->mail->ValidateAddress($address) : FALSE;
 
 		if(!$this->tweet)
 		{
 			try { $this->tweet = new TweetSender(); }
 			catch (NoHelperException $e) {}
 		}
-		if($this->tweet)
-		{
-			$clean = $this->tweet->ValidateAddress($address);
-			if($clean)
-				$to['tweet'] = $clean;
-		}
+		$to['tweet'] = ($this->tweet) ? $this->tweet->ValidateAddress($address) : FALSE;
 		return $to;
 	}
 
