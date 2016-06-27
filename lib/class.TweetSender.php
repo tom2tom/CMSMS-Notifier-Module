@@ -203,7 +203,7 @@ class TweetSender
 	@priv: private-key to be saved
 	Returns: boolean - whether the save succeeded
 	*/
-	function SaveTokens($handle,$pub,$priv)
+	public function SaveTokens($handle,$pub,$priv)
 	{
 		if(!$pub || !$priv || !$handle)
 			return FALSE;
@@ -254,6 +254,26 @@ class TweetSender
 		return FALSE;
 	}
 */
+	/**
+	GetHandles:
+	@default: optional boolean, whether to prepend '', default TRUE
+	Returns: array of available/authorised sender-handles, first member being
+	'@CMSMSNotifier' if @default is TRUE
+	*/
+	public function GetHandles($default=TRUE)
+	{
+		$pref = cms_db_prefix();
+		$db = cmsms()->GetDb();
+		$ret = $db->GetCol('SELECT handle FROM '.$pref.'module_tell_tweeter');
+		if($ret)
+		{
+			if($default)
+				array_unshift($ret,'@CMSMSNotifier');
+		}
+		elseif($default)
+			$ret = array('@CMSMSNotifier');
+		return $ret;
+	}
 }
 
 ?>
