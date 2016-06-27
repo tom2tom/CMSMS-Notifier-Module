@@ -47,7 +47,7 @@ class SMSSender
 	}
 
 	/*
-	 $number is string with no whitespace, $prefix is string [+]digit(s) and maybe whitespace
+	 $number is string with no whitespace, $prefix is string [+]digit(s) and maybe whitespace, or FALSE
 	*/
 	private function AdjustPhone($number,$prefix)
 	{
@@ -57,10 +57,14 @@ class SMSSender
 				$number = substr($number,1); //assume it's already a full number i.e. +countrylocal
 			return $number;
 		}
-		$p = str_replace(' ','',$prefix);
-		$plus = ($p[0] == '+');
-		if($plus)
-			$p = substr($p,1);
+		if($prefix)
+		{
+			$p = str_replace(' ','',$prefix);
+			if($p[0] == '+')
+				$p = substr($p,1);
+		}
+		else
+			$p = '';
 
 		$l = strlen($p);
 		if($l > 0)
@@ -99,14 +103,16 @@ class SMSSender
 		if(!$body || !$this->utils->text_is_valid($body))
 			return array(FALSE,$mod->Lang('err_text').' \''.$body.'\'');
 		if($from && $this->fromnum)
+		{
+			$from = self::AdjustPhone($from,$prefix);
 			$this->gateway->set_from($from);
+		}
 		$this->gateway->set_msg($body);
 		$err = '';
 		//assume gateway doesn't support batching
 		foreach($to as $num)
 		{
-			if($prefix)
-				$num = self::AdjustPhone($num,$prefix);
+			$num = self::AdjustPhone($num,$prefix);
 			$this->gateway->set_num($num);
 			if(!$this->gateway->send())
 			{
