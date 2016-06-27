@@ -64,7 +64,7 @@ try
 						'title' => $this->Lang('status_complete',$token['screen_name']),
 						'icon' => $this->GetModuleURLPath().'/images/oauth.png'
 					);
-					notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
+					echo notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
 					return;
 				}
 				else
@@ -96,6 +96,6 @@ $tplvars = array(
 if(!empty($message))
 	$tplvars['message'] = $message; //tell about success or failure
 
-notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
+echo notifier_utils::ProcessTemplate($this,'tweet_auth.tpl',$tplvars);
 
 ?>

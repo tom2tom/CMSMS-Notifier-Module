@@ -281,6 +281,6 @@ if($jsloads)
 $tplvars['jsfuncs'] = $jsfuncs;
 $tplvars['jsincs'] = $jsincs;
 
-notifier_utils::ProcessTemplate($this,'adminpanel.tpl',$tplvars);
+echo notifier_utils::ProcessTemplate($this,'adminpanel.tpl',$tplvars);
 
 ?>
