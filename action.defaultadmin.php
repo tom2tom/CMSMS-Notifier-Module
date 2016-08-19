@@ -251,7 +251,7 @@ $pw = $this->GetPreference('masterpass');
 if($pw)
 	$pw = $funcs->unfusc($pw);
 
-$tplvars['input_password'] = 
+$tplvars['input_password'] =
 	$this->CreateTextArea(false,$id,$pw,'masterpass','cloaked',
 		$id.'passwd','','',40,2);
 
@@ -259,7 +259,7 @@ $jsincs[] = '<script type="text/javascript" src="'.$baseurl.'/include/jquery-inp
 $jsloads[] = <<<EOS
  $('#{$id}passwd').inputCloak({
   type:'see4',
-  symbol:'\u2022'
+  symbol:'\u25CF'
  });
 
 EOS;
