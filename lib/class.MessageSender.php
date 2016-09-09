@@ -146,7 +146,7 @@ class MessageSender
 				}
 			}
 		}
-		if($tweetmsg)
+		if($tweetparms)
 		{
 			if(!$this->tweet)
 			{
@@ -162,7 +162,7 @@ class MessageSender
 					list($ok,$msg1) = $this->tweet->Send(array(
 						'handle'=>$sender,
 						'to'=>$tweetto,
-						'body'=>$tweetmsg));
+						'body'=>$tweetparms['body']));
 					if(!$ok && $msg1)
 						$msgs[] = $msg1;
 				}
@@ -178,18 +178,18 @@ class MessageSender
 			}
 			unset($one);
 			if($this->text && $this->text->skips)
-				$sent1 = array_diff($all,$this->text->skips); //trimmed, not otherwise changed
+				$sent1 = array_diff($to,$this->text->skips); //trimmed, not otherwise changed
 			else
-				$sent1 = ($this->text) ? $all:array();
+				$sent1 = ($this->text) ? $to:array();
 			if($this->mail && $this->mail->skips)
-				$sent2 = array_diff($all,$this->mail->skips); //ditto
+				$sent2 = array_diff($to,$this->mail->skips); //ditto
 			else
-				$sent2 = ($this->mail) ? $all:array();
+				$sent2 = ($this->mail) ? $to:array();
 			if($this->tweet && $this->tweet->skips)
-				$sent3 = array_diff($all,$this->tweet->skips); //ditto
+				$sent3 = array_diff($to,$this->tweet->skips); //ditto
 			else
-				$sent3 = ($this->tweet) ? $all:array();
-			$skips = array_diff($all,$sent1,$sent2,$sent3);
+				$sent3 = ($this->tweet) ? $to:array();
+			$skips = array_diff($to,$sent1,$sent2,$sent3);
 			if($skips)
 				$skips = implode(', ',$skips);
 			if($msgs)

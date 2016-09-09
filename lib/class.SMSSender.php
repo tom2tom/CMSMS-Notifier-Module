@@ -186,7 +186,7 @@ class SMSSender
 			if(preg_match($pattern,$to))
 				$valid[] = $to;
 			else
-				$skips = trim($one);
+				$skips[] = trim($one);
 		}
 		$this->skips = $skips;
 		if($valid)
