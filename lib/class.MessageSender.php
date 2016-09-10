@@ -107,12 +107,12 @@ class MessageSender
 				if($textto)
 				{
 					$sender = (!empty($from) && $this->text->ValidateAddress($from,$pattern)) ? $from : FALSE;
-					list($ok,$msg1) = $this->text->Send(array(
+					list($res,$msg1) = $this->text->Send(array(
 						'prefix'=>$textparms['prefix'],
 						'to'=>$textto,
 						'from'=>$sender,
 						'body'=>$textparms['body']));
-					if(!$ok && $msg1)
+					if(!$res && $msg1)
 						$msgs[] = $msg1;
 				}
 			}
@@ -132,7 +132,7 @@ class MessageSender
 					$cc = isset($mailparms['cc']) ? $this->mail->ValidateAddress($mailparms['cc']) : FALSE;
 					$bcc = isset($mailparms['bcc']) ? $this->mail->ValidateAddress($mailparms['bcc']) : FALSE;
 					$sender = (!empty($from) && $this->mail->ValidateAddress($from)) ? $from : FALSE;
-					list($ok,$msg1) = $this->mail->Send(array(
+					list($res,$msg1) = $this->mail->Send(array(
 						'subject'=>$mailparms['subject'],
 						'to'=>$mailto,
 						'cc'=>$cc,
@@ -141,7 +141,7 @@ class MessageSender
 						'body'=>$mailparms['body'],
 						'html'=>!empty($mailparms['html'])
 						));
-					if(!$ok && $msg1)
+					if(!$res && $msg1)
 						$msgs[] = $msg1;
 				}
 			}
@@ -159,18 +159,18 @@ class MessageSender
 				if($tweetto)
 				{
 					$sender = (!empty($from) && $this->tweet->ValidateAddress($from)) ? $from : '@CMSMSNotifier';
-					list($ok,$msg1) = $this->tweet->Send(array(
+					list($res,$msg1) = $this->tweet->Send(array(
 						'handle'=>$sender,
 						'to'=>$tweetto,
 						'body'=>$tweetparms['body']));
-					if(!$ok && $msg1)
+					if(!$res && $msg1)
 						$msgs[] = $msg1;
 				}
 			}
 		}
 
 		$mod = cms_utils::get_module('Notifier'); //self
-		if(isset($ok))
+		if(isset($res))
 		{
 			foreach($to as &$one)
 			{
