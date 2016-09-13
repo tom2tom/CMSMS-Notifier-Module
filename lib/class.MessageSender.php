@@ -172,11 +172,21 @@ class MessageSender
 		$mod = cms_utils::get_module('Notifier'); //self
 		if(isset($res))
 		{
-			foreach($to as &$one)
+			//cleanups to match class-specific verifiers
+			foreach($to as $i=>&$one)
 			{
-				$one = trim($one); //match class-specific verifiers
+				if(is_array($one))
+				{
+					$v = trim(reset($one));
+					$k = key($one);
+					unset($to[$i]);
+					$to[$k]=$v;
+				}
+				else
+					$one = trim($one);
 			}
 			unset($one);
+
 			if($this->text && $this->text->skips)
 				$sent1 = array_diff($to,$this->text->skips); //trimmed, not otherwise changed
 			else
@@ -192,6 +202,7 @@ class MessageSender
 			$skips = array_diff($to,$sent1,$sent2,$sent3);
 			if($skips)
 				$skips = implode(', ',$skips);
+
 			if($msgs)
 			{
 				$err = implode('<br />',$msgs);

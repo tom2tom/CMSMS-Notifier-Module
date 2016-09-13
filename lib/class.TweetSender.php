@@ -147,6 +147,7 @@ class TweetSender
 	/**
 	ValidateAddress:
 	Check whether @address is or includes valid twitter handle(s)
+	Unusable addresses are logged in self::$skips.
 	@address: destination to check (scalar or array). If scalar it may have
 	','-separated multiple destinations.
 	Returns: array of trimmed valid twitter handle(s), or FALSE
@@ -154,7 +155,7 @@ class TweetSender
 	public function ValidateAddress($address)
 	{
 		$pattern = '/^@\w{1,15}$/';
-		if(!is_array($address))
+		if(!is_array($address[0]))
 		{
 			if(strpos($address,',') === FALSE)
 			{
@@ -173,11 +174,16 @@ class TweetSender
 		$skips = array();
 		foreach($address as $one)
 		{
-			$to = trim($one);
-			if(preg_match($pattern,$to))
-				$valid[] = $to;
-			else
-				$skips[] = $to;
+			if (!is_array($one)) { //ignore email-destinations like name=>address
+				$to = trim($one);
+				if(preg_match($pattern,$to)) {
+					$valid[] = $to;
+				} else {
+					$skips[] = $to;
+				}
+			} else {
+				$skips[] = trim(reset($one));
+			}
 		}
 		$this->skips = $skips;
 		if($valid)

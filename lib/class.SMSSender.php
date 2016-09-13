@@ -155,6 +155,7 @@ class SMSSender
 	/**
 	ValidateAddress:
 	Check whether @address is or includes valid phone number(s).
+	Unusable addresses are logged in self::$skips.
 	@address: destination to check (scalar or array). If scalar it may have
 	','-separated multiple destinations.
 	@pattern: regex for matching acceptable phone nos (to be applied after any whitespace is removed)
@@ -166,7 +167,7 @@ class SMSSender
 		if(!$pattern)
 			return FALSE;
 		$pattern = '~'.$pattern.'~';
-		if(!is_array($address))
+		if(!is_array($address[0]))
 		{
 			if(strpos($address,',') === FALSE)
 			{
@@ -182,11 +183,16 @@ class SMSSender
 		$skips = array();
 		foreach($address as $one)
 		{
-			$to = str_replace(' ','',$one);
-			if(preg_match($pattern,$to))
-				$valid[] = $to;
-			else
-				$skips[] = trim($one);
+			if (!is_array($one)) { //ignore email-destinations like name=>address
+				$to = str_replace(' ','',$one);
+				if(preg_match($pattern,$to)) {
+					$valid[] = $to;
+				} else {
+					$skips[] = trim($one);
+				}
+			} else {
+				$skips[] = trim(reset($one));
+			}
 		}
 		$this->skips = $skips;
 		if($valid)

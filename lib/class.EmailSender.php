@@ -167,6 +167,7 @@ class EmailSender
 	/**
 	ValidateAddress:
 	Check whether @address is or includes string(s) like a valid email address
+	Unusable addresses are logged in self::$skips.
 	@address: destination to check (scalar or array). If scalar it may have
 	','-separated multiple destinations, if array then non-numeric keys are assumed
 	to be receiver-names and any duplication will be removed
@@ -177,7 +178,7 @@ class EmailSender
 		//pretty much everything is valid, provided there's an '@' in there!
 		//more-complicated patterns like RFC2822 are overkill
 		$pattern = '/.+@.+\..+/';
-		if(!is_array($address))
+		if(!is_array($address[0]))
 		{
 			if(strpos($address,',') === FALSE)
 			{
@@ -195,18 +196,25 @@ class EmailSender
 		$named = array();
 		$anon = array();
 		$skips = array();
-		foreach($address as $name=>$addr)
+		foreach($address as $one)
 		{
-			$to = trim($addr);
-			if(preg_match($pattern,$to))
+			if(is_array($one)) //like name=>address
 			{
-				if(!is_numeric($name))
-					$named[$name] = $to;
+				$to = trim(reset($one));
+				$k = key($one);
+				if(preg_match($pattern,$to))
+					$named[$k] = $to;
 				else
-					$anon[] = $to;
+					$skips[] = array($k=>$to);
 			}
 			else
-				$skips[] = $to;
+			{
+				$to = trim($one);
+				if(preg_match($pattern,$to))
+					$anon[] = $to;
+				else
+					$skips[] = $to;
+			}
 		}
 		$this->skips = $skips;
 		if($anon)
