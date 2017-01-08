@@ -17,23 +17,21 @@ class notifier_utils
 	@based: optional boolean, whether to base64_encode the encrypted value, default TRUE
 	Returns: encrypted @value, or just @value if it's empty
 	*/
-	function encrypt_value(&$mod,$value,$passwd=FALSE,$based=TRUE)
+	public function encrypt_value(&$mod, $value, $passwd=FALSE, $based=TRUE)
 	{
-		if($value)
-		{
-			if(!$passwd)
-			{
+		if ($value) {
+			if (!$passwd) {
 				$passwd = self::unfusc($mod->GetPreference('masterpass'));
 			}
-			if($passwd && $mod->havemcrypt)
-			{
-				$e = new Encryption(MCRYPT_BLOWFISH,MCRYPT_MODE_CBC,self::ENC_ROUNDS);
-				$value = $e->encrypt($value,$passwd);
-				if($based)
+			if ($passwd && $mod->havemcrypt) {
+				$e = new Encryption(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC, self::ENC_ROUNDS);
+				$value = $e->encrypt($value, $passwd);
+				if ($based) {
 					$value = base64_encode($value);
-			}
-			else
+				}
+			} else {
 				$value = self::fusc($passwd.$value);
+			}
 		}
 		return $value;
 	}
@@ -46,23 +44,21 @@ class notifier_utils
 	@based: optional boolean, whether to base64_decode the value, default TRUE
 	Returns: decrypted @value, or just @value if it's empty
 	*/
-	function decrypt_value(&$mod,$value,$passwd=FALSE,$based=TRUE)
+	public function decrypt_value(&$mod, $value, $passwd=FALSE, $based=TRUE)
 	{
-		if($value)
-		{
-			if(!$passwd)
-			{
+		if ($value) {
+			if (!$passwd) {
 				$passwd = self::unfusc($mod->GetPreference('masterpass'));
 			}
-			if($passwd && $mod->havemcrypt)
-			{
-				if($based)
+			if ($passwd && $mod->havemcrypt) {
+				if ($based) {
 					$value = base64_decode($value);
-				$e = new Encryption(MCRYPT_BLOWFISH,MCRYPT_MODE_CBC,self::ENC_ROUNDS);
-				$value = $e->decrypt($value,$passwd);
+				}
+				$e = new Encryption(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC, self::ENC_ROUNDS);
+				$value = $e->decrypt($value, $passwd);
+			} else {
+				$value = substr(strlen($passwd), self::unfusc($value));
 			}
-			else
-				$value = substr(strlen($passwd),self::unfusc($value));
 		}
 		return $value;
 	}
@@ -72,11 +68,10 @@ class notifier_utils
 	@str: string or FALSE
 	obfuscate @str
 	*/
-	function fusc($str)
+	public function fusc($str)
 	{
-		if($str)
-		{
-			$s = substr(base64_encode(md5(microtime())),0,5);
+		if ($str) {
+			$s = substr(base64_encode(md5(microtime())), 0, 5);
 			return $s.base64_encode($s.$str);
 		}
 		return '';
@@ -87,12 +82,11 @@ class notifier_utils
 	@str: string or FALSE
 	de-obfuscate @str
 	*/
-	function unfusc($str)
+	public function unfusc($str)
 	{
-		if($str)
-		{
-			$s = base64_decode(substr($str,5));
-			return substr($s,5);
+		if ($str) {
+			$s = base64_decode(substr($str, 5));
+			return substr($s, 5);
 		}
 		return '';
 	}
@@ -105,28 +99,23 @@ class notifier_utils
 	@cache: optional boolean, default TRUE
 	Returns: string, processed template
 	*/
-	public static function ProcessTemplate(&$mod,$tplname,$tplvars,$cache=TRUE)
+	public static function ProcessTemplate(&$mod, $tplname, $tplvars, $cache=TRUE)
 	{
 		global $smarty;
-		if($mod->before20)
-		{
+		if ($mod->before20) {
 			$smarty->assign($tplvars);
 			return $mod->ProcessTemplate($tplname);
-		}
-		else
-		{
-			if($cache)
-			{
+		} else {
+			if ($cache) {
 				$cache_id = md5('tell'.$tplname.serialize(array_keys($tplvars)));
 				$lang = CmsNlsOperations::get_current_language();
 				$compile_id = md5('tell'.$tplname.$lang);
-				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname),$cache_id,$compile_id,$smarty);
-				if(!$tpl->isCached())
+				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname), $cache_id, $compile_id, $smarty);
+				if (!$tpl->isCached()) {
 					$tpl->assign($tplvars);
-			}
-			else
-			{
-				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname),NULL,NULL,$smarty,$tplvars);
+				}
+			} else {
+				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname), NULL, NULL, $smarty, $tplvars);
 			}
 			return $tpl->fetch();
 		}
@@ -136,9 +125,9 @@ class notifier_utils
 	data adapted from www.idd.com.au/telephone-country-codes.php and www.geonames.org
 	Returns: array
 	*/
-	function allprefix()
+	public function allprefix()
 	{
-		return array (
+		return array(
 			'Afghanistan'=>93,
 			'Aland Islands'=>35818,
 			'Albania'=>355,
@@ -183,7 +172,7 @@ class notifier_utils
 			'Cameroon'=>237,
 			'Canada'=>1,
 			'Cape Verde'=>238,
-			'Caribbean Netherlands'=>array(5993,5994,5997),
+			'Caribbean Netherlands'=>array(5993, 5994, 5997),
 			'Cayman Islands'=>1345,
 			'Central African Republic'=>236,
 			'Chad'=>235,
@@ -208,7 +197,7 @@ class notifier_utils
 			'Diego Garcia'=>246,
 			'Djibouti'=>253,
 			'Dominica'=>1767,
-			'Dominican Republic'=>array(1809,1829,1849),
+			'Dominican Republic'=>array(1809, 1829, 1849),
 			'East Timor'=>670,
 			'Easter Island'=>56,
 			'Ecuador'=>593,
@@ -260,7 +249,7 @@ class notifier_utils
 			'Japan'=>81,
 			'Jersey'=>44,
 			'Jordan'=>962,
-			'Kazakhstan'=>array(76,77),
+			'Kazakhstan'=>array(76, 77),
 			'Kenya'=>254,
 			'Kiribati'=>686,
 			'Kosovo'=>383,
@@ -327,7 +316,7 @@ class notifier_utils
 			'Pitcairn Islands'=>64,
 			'Poland'=>48,
 			'Portugal'=>351,
-			'Puerto Rico'=>array(1787,1939),
+			'Puerto Rico'=>array(1787, 1939),
 			'Qatar'=>974,
 			'Republic of the Congo'=>242,
 			'Reunion'=>262,
@@ -393,7 +382,7 @@ class notifier_utils
 			'Uruguay'=>598,
 			'Uzbekistan'=>998,
 			'Vanuatu'=>678,
-			'Vatican City State'=>array(39066,379),
+			'Vatican City State'=>array(39066, 379),
 			'Venezuela'=>58,
 			'Vietnam'=>84,
 			'Wake Island'=>1808,
@@ -412,36 +401,26 @@ class notifier_utils
 	@country:  ASCII-encoded identifier
 	Returns code for exact match, or partial-match, or capital-letters-match, or FALSE
 	*/
-	function phoneprefix($country)
+	public function phoneprefix($country)
 	{
 		$p = FALSE;
 		$prefixes = self::allprefix();
-		if(isset($prefixes[$country]))
-		{
+		if (isset($prefixes[$country])) {
 			$p = $prefixes[$country];
-		}
-		else
-		{
+		} else {
 			$names = array_keys($prefixes);
-			$m = preg_grep('/.*'.$country.'.*/',$names);
-			if($m)
-			{
+			$m = preg_grep('/.*'.$country.'.*/', $names);
+			if ($m) {
 				$p = $prefixes[$m[1]];
-			}
-			else
-			{
+			} else {
 				$patn = '/[A-Z][\w\'-]+(\s+[A-Za-z][\w\'-]+)+/'; //2-or-more words, 1st capitalised
-				$m = preg_grep($patn,$names);
-				if($m)
-				{
+				$m = preg_grep($patn, $names);
+				if ($m) {
 					$patn = '/([A-Z])[\w\'.-]+/';
-					foreach($m as $one)
-					{
-						if(preg_match_all($patn,$one,$found))
-						{
+					foreach ($m as $one) {
+						if (preg_match_all($patn, $one, $found)) {
 							$caps = implode($found[1]);
-							if($caps == $country)
-							{
+							if ($caps == $country) {
 								$p = $prefixes[$one];
 								break;
 							}
@@ -451,8 +430,9 @@ class notifier_utils
 			}
 		}
 
-		if(is_array($p))
+		if (is_array($p)) {
 			return $p[0];
+		}
 		return $p;
 	}
 
@@ -460,12 +440,9 @@ class notifier_utils
 	wrapper for mechanism to get twitter authorisation
 	Returns: nope - redirects instead
 	*/
-	function get_auth($id='m1_',$returnid = '')
+	public function get_auth($id='m1_', $returnid = '')
 	{
 		$mod = cms_utils::get_module('Notifier'); //self
-		$mod->DoAction('twitauth',$id,array('start'=>1),$returnid);
+		$mod->DoAction('twitauth', $id, array('start'=>1), $returnid);
 	}
-
 }
-
-?>

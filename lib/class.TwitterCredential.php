@@ -2,7 +2,8 @@
 
 class TwitterCredential extends NTwitter
 {
-	public function __construct($consumerKey, $consumerSecret, $accessToken = NULL, $accessTokenSecret = NULL) {
+	public function __construct($consumerKey, $consumerSecret, $accessToken = NULL, $accessTokenSecret = NULL)
+	{
 		parent::__construct($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 	}
 
@@ -12,7 +13,8 @@ class TwitterCredential extends NTwitter
 	 * @param optional string, account name for inclusion in Twitter sign-in form
 	 * @return error message string if redirection impossible
 	 */
-	public function gogetToken($callback,$name=FALSE) {
+	public function gogetToken($callback, $name=FALSE)
+	{
 		try {
 			$results = $this->request(
 				'https://api.twitter.com/oauth/request_token', //override parent's URL-constructor
@@ -20,7 +22,7 @@ class TwitterCredential extends NTwitter
 		} catch (TwitterException $e) {
 			return $e->getMessage();
 		}
-		if($results) {
+		if ($results) {
 			$token = Twitter_OAuthUtil::parse_parameters($results);
 			if (is_array($token) && isset($token['oauth_callback_confirmed'])
 					&& $token['oauth_callback_confirmed'] == 'true') {
@@ -29,8 +31,9 @@ class TwitterCredential extends NTwitter
 					'&oauth_token='.$token['oauth_token'].
 //					'&oauth_token_secret='.$token['oauth_token_secret'].
 					'&force_login=true';
-				if($name)
+				if ($name) {
 					$url .= '&screen_name='.$name;
+				}
 				header('Location: '.$url);
 				exit;
 			}
@@ -44,7 +47,8 @@ class TwitterCredential extends NTwitter
 	 * @return associative array with keys: oauth_token, oauth_token_secret, screen_name
 	 *   or error message string
 	 */
-	public function getAuthority($verifier) {
+	public function getAuthority($verifier)
+	{
 		try {
 			$results = $this->request(
 				'https://api.twitter.com/oauth/access_token', //override parent's URL-constructor
@@ -52,7 +56,7 @@ class TwitterCredential extends NTwitter
 		} catch (TwitterException $e) {
 			return $e->getMessage();
 		}
-		if($results) {
+		if ($results) {
 			$token = Twitter_OAuthUtil::parse_parameters($results);
 			if (is_array($token) && isset($token['oauth_token'])) {
 				unset($token['user_id']);
@@ -62,5 +66,3 @@ class TwitterCredential extends NTwitter
 		return 'Twitter authority-request failed';
 	}
 }
-
-?>

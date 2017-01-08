@@ -5,12 +5,12 @@ require_once dirname(__FILE__) . '/OAuth.php';
 /**
  * Twitter for PHP - library for sending messages to Twitter and receiving status updates.
  *
- * @author     David Grudl
+ * @author	 David Grudl
  * @copyright  Copyright (c) 2008 David Grudl
- * @license    New BSD License
- * @link       http://phpfashion.com/
- * @see        http://dev.twitter.com/doc
- * @version    3.3
+ * @license	New BSD License
+ * @link	   http://phpfashion.com/
+ * @see		http://dev.twitter.com/doc
+ * @version	3.3
  */
 class NTwitter //renamed to avoid namespace conflict
 {
@@ -76,7 +76,6 @@ class NTwitter //renamed to avoid namespace conflict
 		try {
 			$res = $this->request('account/verify_credentials', 'GET');
 			return !empty($res->id);
-
 		} catch (TwitterException $e) {
 			if ($e->getCode() === 401) {
 				return FALSE;
@@ -117,9 +116,9 @@ class NTwitter //renamed to avoid namespace conflict
 
 	/**
 	 * Returns the most recent statuses.
-	 * @param  int    timeline (ME | ME_AND_FRIENDS | REPLIES) and optional (RETWEETS)
-	 * @param  int    number of statuses to retrieve
-	 * @param  int    page of results to retrieve
+	 * @param  int	timeline (ME | ME_AND_FRIENDS | REPLIES) and optional (RETWEETS)
+	 * @param  int	number of statuses to retrieve
+	 * @param  int	page of results to retrieve
 	 * @return mixed
 	 * @throws TwitterException
 	 */
@@ -167,7 +166,7 @@ class NTwitter //renamed to avoid namespace conflict
 	 * @return mixed
 	 * @throws TwitterException
 	 */
-	public function loadUserFollowers($user, $count = 5000, $cursor = -1, $cacheExpiry = null)
+	public function loadUserFollowers($user, $count = 5000, $cursor = -1, $cacheExpiry = NULL)
 	{
 		return $this->cachedRequest('followers/ids', array('screen_name' => $user, 'count' => $count, 'cursor' => $cursor), $cacheExpiry);
 	}
@@ -175,7 +174,7 @@ class NTwitter //renamed to avoid namespace conflict
 
 	/**
 	 * Destroys status.
-	 * @param  int    id of status to be destroyed
+	 * @param  int	id of status to be destroyed
 	 * @return mixed
 	 * @throws TwitterException
 	 */
@@ -247,15 +246,16 @@ class NTwitter //renamed to avoid namespace conflict
 			throw new TwitterException('Server error: ' . curl_error($curl));
 		}
 
-		$ext = substr($resource,-5);
-		if($ext && strtolower($ext) == '.json') {
+		$ext = substr($resource, -5);
+		if ($ext && strtolower($ext) == '.json') {
 			$payload = version_compare(PHP_VERSION, '5.4.0') >= 0 ?
 				@json_decode($result, FALSE, 128, JSON_BIGINT_AS_STRING) : @json_decode($result); // intentionally @
 			if ($payload === NULL) {
 				throw new TwitterException('Invalid server response');
 			}
-		} else
+		} else {
 			$payload = $result;
+		}
 
 		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		if ($code >= 400) {
@@ -292,7 +292,6 @@ class NTwitter //renamed to avoid namespace conflict
 			$payload = $this->request($resource, 'GET', $data);
 			file_put_contents($cacheFile, json_encode($payload));
 			return $payload;
-
 		} catch (TwitterException $e) {
 			if ($cache) {
 				return $cache;
@@ -366,7 +365,6 @@ class NTwitter //renamed to avoid namespace conflict
 			return $m;
 		}
 	}
-
 }
 
 
@@ -376,5 +374,3 @@ class NTwitter //renamed to avoid namespace conflict
 class TwitterException extends Exception
 {
 }
-
-?>

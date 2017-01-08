@@ -6,7 +6,9 @@
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
 
-class NoHelperException extends Exception {}
+class NoHelperException extends Exception
+{
+}
 
 class MessageSender
 {
@@ -21,20 +23,23 @@ class MessageSender
 	*/
 	public function Load()
 	{
-		if(!$this->text)
-		{
-			try { $this->text = new SMSSender(); }
-			catch (NoHelperException $e) {}
+		if (!$this->text) {
+			try {
+				$this->text = new SMSSender();
+			} catch (NoHelperException $e) {
+			}
 		}
-		if(!$this->mail)
-		{
-			try { $this->mail = new EmailSender(); }
-			catch (NoHelperException $e) {}
+		if (!$this->mail) {
+			try {
+				$this->mail = new EmailSender();
+			} catch (NoHelperException $e) {
+			}
 		}
-		if(!$this->tweet)
-		{
-			try { $this->tweet = new TweetSender(); }
-			catch (NoHelperException $e) {}
+		if (!$this->tweet) {
+			try {
+				$this->tweet = new TweetSender();
+			} catch (NoHelperException $e) {
+			}
 		}
 	}
 
@@ -46,27 +51,30 @@ class MessageSender
 	Returns: associative array with keys 'text','email','tweet', and corresponding
 		members an array of clean address(es), or FALSE
 	*/
-	public function ValidateAddress($address,$pattern=FALSE)
+	public function ValidateAddress($address, $pattern=FALSE)
 	{
 		$to = array();
-		if(!$this->text)
-		{
-			try { $this->text = new SMSSender(); }
-			catch (NoHelperException $e) {}
+		if (!$this->text) {
+			try {
+				$this->text = new SMSSender();
+			} catch (NoHelperException $e) {
+			}
 		}
-		$to['text'] = ($this->text) ? $this->text->ValidateAddress($address,$pattern) : FALSE;
+		$to['text'] = ($this->text) ? $this->text->ValidateAddress($address, $pattern) : FALSE;
 
-		if(!$this->mail)
-		{
-			try { $this->mail = new EmailSender(); }
-			catch (NoHelperException $e) {}
+		if (!$this->mail) {
+			try {
+				$this->mail = new EmailSender();
+			} catch (NoHelperException $e) {
+			}
 		}
 		$to['email'] = ($this->mail) ? $this->mail->ValidateAddress($address) : FALSE;
 
-		if(!$this->tweet)
-		{
-			try { $this->tweet = new TweetSender(); }
-			catch (NoHelperException $e) {}
+		if (!$this->tweet) {
+			try {
+				$this->tweet = new TweetSender();
+			} catch (NoHelperException $e) {
+			}
 		}
 		$to['tweet'] = ($this->tweet) ? $this->tweet->ValidateAddress($address) : FALSE;
 		return $to;
@@ -90,49 +98,46 @@ class MessageSender
 	 [0] TRUE|FALSE representing success
 	 [1] '' or specific problem(s) message (including any destination(s) not used)
 	*/
-	public function Send($from,$to,$textparms=FALSE,$mailparms=FALSE,$tweetparms=FALSE)
+	public function Send($from, $to, $textparms=FALSE, $mailparms=FALSE, $tweetparms=FALSE)
 	{
 		$msgs = array();
-		if($textparms)
-		{
-			if(!$this->text)
-			{
-				try { $this->text = new SMSSender(); }
-				catch (NoHelperException $e) {}
+		if ($textparms) {
+			if (!$this->text) {
+				try {
+					$this->text = new SMSSender();
+				} catch (NoHelperException $e) {
+				}
 			}
-			if($this->text)
-			{
+			if ($this->text) {
 				$pattern = $textparms['pattern'];
-				$textto = $this->text->ValidateAddress($to,$pattern);
-				if($textto)
-				{
-					$sender = (!empty($from) && $this->text->ValidateAddress($from,$pattern)) ? $from : FALSE;
-					list($res,$msg1) = $this->text->Send(array(
+				$textto = $this->text->ValidateAddress($to, $pattern);
+				if ($textto) {
+					$sender = (!empty($from) && $this->text->ValidateAddress($from, $pattern)) ? $from : FALSE;
+					list($res, $msg1) = $this->text->Send(array(
 						'prefix'=>$textparms['prefix'],
 						'to'=>$textto,
 						'from'=>$sender,
 						'body'=>$textparms['body']));
-					if(!$res && $msg1)
+					if (!$res && $msg1) {
 						$msgs[] = $msg1;
+					}
 				}
 			}
 		}
-		if($mailparms)
-		{
-			if(!$this->mail)
-			{
-				try { $this->mail = new EmailSender(); }
-				catch (NoHelperException $e) {}
+		if ($mailparms) {
+			if (!$this->mail) {
+				try {
+					$this->mail = new EmailSender();
+				} catch (NoHelperException $e) {
+				}
 			}
-			if($this->mail)
-			{
+			if ($this->mail) {
 				$mailto = $this->mail->ValidateAddress($to);
-				if($mailto)
-				{
+				if ($mailto) {
 					$cc = isset($mailparms['cc']) ? $this->mail->ValidateAddress($mailparms['cc']) : FALSE;
 					$bcc = isset($mailparms['bcc']) ? $this->mail->ValidateAddress($mailparms['bcc']) : FALSE;
 					$sender = (!empty($from) && $this->mail->ValidateAddress($from)) ? $from : FALSE;
-					list($res,$msg1) = $this->mail->Send(array(
+					list($res, $msg1) = $this->mail->Send(array(
 						'subject'=>$mailparms['subject'],
 						'to'=>$mailto,
 						'cc'=>$cc,
@@ -141,86 +146,86 @@ class MessageSender
 						'body'=>$mailparms['body'],
 						'html'=>!empty($mailparms['html'])
 						));
-					if(!$res && $msg1)
+					if (!$res && $msg1) {
 						$msgs[] = $msg1;
+					}
 				}
 			}
 		}
-		if($tweetparms)
-		{
-			if(!$this->tweet)
-			{
-				try { $this->tweet = new TweetSender(); }
-				catch (NoHelperException $e) {}
+		if ($tweetparms) {
+			if (!$this->tweet) {
+				try {
+					$this->tweet = new TweetSender();
+				} catch (NoHelperException $e) {
+				}
 			}
-			if($this->tweet)
-			{
+			if ($this->tweet) {
 				$tweetto = $this->tweet->ValidateAddress($to);
-				if($tweetto)
-				{
+				if ($tweetto) {
 					$sender = (!empty($from) && $this->tweet->ValidateAddress($from)) ? $from : '@CMSMSNotifier';
-					list($res,$msg1) = $this->tweet->Send(array(
+					list($res, $msg1) = $this->tweet->Send(array(
 						'handle'=>$sender,
 						'to'=>$tweetto,
 						'body'=>$tweetparms['body']));
-					if(!$res && $msg1)
+					if (!$res && $msg1) {
 						$msgs[] = $msg1;
+					}
 				}
 			}
 		}
 
 		$mod = cms_utils::get_module('Notifier'); //self
-		if(isset($res))
-		{
+		if (isset($res)) {
 			//cleanups to match class-specific verifiers
-			foreach($to as $i=>&$one)
-			{
-				if(is_array($one))
-				{
+			foreach ($to as $i=>&$one) {
+				if (is_array($one)) {
 					$v = trim(reset($one));
 					$k = key($one);
 					unset($to[$i]);
 					$to[$k]=$v;
-				}
-				else
+				} else {
 					$one = trim($one);
+				}
 			}
 			unset($one);
 
-			if($this->text && $this->text->skips)
-				$sent1 = array_diff($to,$this->text->skips); //trimmed, not otherwise changed
-			else
+			if ($this->text && $this->text->skips) {
+				$sent1 = array_diff($to, $this->text->skips);
+			} //trimmed, not otherwise changed
+			else {
 				$sent1 = ($this->text) ? $to:array();
-			if($this->mail && $this->mail->skips)
-				$sent2 = array_diff($to,$this->mail->skips); //ditto
-			else
+			}
+			if ($this->mail && $this->mail->skips) {
+				$sent2 = array_diff($to, $this->mail->skips);
+			} //ditto
+			else {
 				$sent2 = ($this->mail) ? $to:array();
-			if($this->tweet && $this->tweet->skips)
-				$sent3 = array_diff($to,$this->tweet->skips); //ditto
-			else
+			}
+			if ($this->tweet && $this->tweet->skips) {
+				$sent3 = array_diff($to, $this->tweet->skips);
+			} //ditto
+			else {
 				$sent3 = ($this->tweet) ? $to:array();
-			$skips = array_diff($to,$sent1,$sent2,$sent3);
-			if($skips)
-				$skips = implode(', ',$skips);
+			}
+			$skips = array_diff($to, $sent1, $sent2, $sent3);
+			if ($skips) {
+				$skips = implode(', ', $skips);
+			}
 
-			if($msgs)
-			{
-				$err = implode('<br />',$msgs);
-				if($skips)
-					$err .= '<br />'.$mod->Lang('err_somenosend',$skips);
+			if ($msgs) {
+				$err = implode('<br />', $msgs);
+				if ($skips) {
+					$err .= '<br />'.$mod->Lang('err_somenosend', $skips);
+				}
 				return array(FALSE,$err);
-			}
-			elseif($skips)
-			{
-				$err = $mod->Lang('err_somenosend',$skips);
+			} elseif ($skips) {
+				$err = $mod->Lang('err_somenosend', $skips);
 				return array(FALSE,$err);
-			}
-			else
+			} else {
 				return array(TRUE,'');
-		}
-		else
+			}
+		} else {
 			return array(FALSE,$mod->Lang('err_nosend'));
+		}
 	}
 }
-
-?>

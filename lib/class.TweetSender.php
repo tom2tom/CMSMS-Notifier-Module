@@ -19,19 +19,19 @@ class TweetSender
 	private $access_token = '4109330354-VVDKfSYG4xFedZmyIIEL1ClBGEbW5qMcStj5mm4';
 	private $access_secret;
 
-	function __construct(&$mod = NULL)
+	public function __construct(&$mod = NULL)
 	{
-		try
-		{
+		try {
 			//construction checks some pre-req's but NOT the validity of the supplied codes!
 			//real credentials set before first use
-			$this->twt = new NTwitter('dummy','dummy');
+			$this->twt = new NTwitter('dummy', 'dummy');
 		} catch (TwitterException $e) {
 			$this->twt = FALSE;
 			throw new NoHelperException();
 		}
-		if(is_null($mod))
+		if (is_null($mod)) {
 			$mod = cms_utils::get_module('Notifier');
+		}
 		$this->mod = $mod;
 		$this->api_secret = $mod->GetPreference('privapi');
 		$this->access_secret = $mod->GetPreference('privaccess');
@@ -46,28 +46,28 @@ class TweetSender
 	 [0] FALSE if no @to, otherwise boolean cumulative result of twt->Send()
 	 [1] '' or error message e.g. from twt->send()
 	*/
-	private function DoSend($to,$body)
+	private function DoSend($to, $body)
 	{
-		if(!$to)
+		if (!$to) {
 			return array(FALSE,'');
+		}
 		$to = array_unique($to);
 		$err = '';
 		$lb = strlen($body);
 
-		foreach($to as $handle)
-		{
+		foreach ($to as $handle) {
 			$lh = strlen($handle);
-			if($lb+$lh <= 139)
+			if ($lb+$lh <= 139) {
 				$main = $body;
-			else
-				$main = substr($body,0,139-$lh);
-			try
-			{
-				$this->twt->send($main.' #'.substr($handle,1));
+			} else {
+				$main = substr($body, 0, 139-$lh);
 			}
-			catch (TwitterException $e)
-			{
-				if($err) $err .= '<br />';
+			try {
+				$this->twt->send($main.' #'.substr($handle, 1));
+			} catch (TwitterException $e) {
+				if ($err) {
+					$err .= '<br />';
+				}
 				$err .= $hash.': '.$e->getMessage();
 			}
 		}
@@ -91,57 +91,52 @@ class TweetSender
 	public function Send($parms)
 	{
 		extract($parms);
-		if(!$this->loaded)
-		{
+		if (!$this->loaded) {
 			$funcs = new notifier_utils();
-			if($handle)
-			{
-				if($handle = '@CMSMSNotifier')
-				{
+			if ($handle) {
+				if ($handle = '@CMSMSNotifier') {
 					$pubtoken = $this->api_key;
-					$privtoken = $funcs->decrypt_value($this->mod,$this->api_secret);
-				}
-				else
-				{
+					$privtoken = $funcs->decrypt_value($this->mod, $this->api_secret);
+				} else {
 					$db = cmsms()->GetDb();
 					$sql = 'SELECT pubtoken,privtoken FROM '.cms_db_prefix().'module_tell_tweeter WHERE handle=?';
-					$vals = $db->GetOne($sql,array($handle));
-					if(!$vals)
+					$vals = $db->GetOne($sql, array($handle));
+					if (!$vals) {
 						return array(FALSE,'TODO');
+					}
 					$pubtoken = $vals['pubtoken'];
-					$privtoken = $funcs->decrypt_value($this->mod,$vals['privtoken']); //TODO specific passwd
+					$privtoken = $funcs->decrypt_value($this->mod, $vals['privtoken']); //TODO specific passwd
 				}
 				$creds = array(
 				 'api_key'=>$this->api_key,
-				 'api_secret'=>$funcs->decrypt_value($this->mod,$this->api_secret),
+				 'api_secret'=>$funcs->decrypt_value($this->mod, $this->api_secret),
 				 'access_token'=>$pubtoken,
 				 'access_secret'=>$privtoken
 				);
-			}
-			elseif($creds)
-			{
-				if(empty($creds['api_key']))
+			} elseif ($creds) {
+				if (empty($creds['api_key'])) {
 					$creds['api_key'] = $this->api_key;
-				if(empty($creds['api_secret']))
-					$creds['api_secret'] = $funcs->decrypt_value($this->mod,$this->api_secret);
-			}
-			else
-			{
+				}
+				if (empty($creds['api_secret'])) {
+					$creds['api_secret'] = $funcs->decrypt_value($this->mod, $this->api_secret);
+				}
+			} else {
 				$creds = array(
 				 'api_key'=>$this->api_key,
-				 'api_secret'=>$funcs->decrypt_value($this->mod,$this->api_secret),
+				 'api_secret'=>$funcs->decrypt_value($this->mod, $this->api_secret),
 				 'access_token'=>$this->access_token,
-				 'access_secret'=>$funcs->decrypt_value($this->mod,$this->access_secret)
+				 'access_secret'=>$funcs->decrypt_value($this->mod, $this->access_secret)
 				);
 			}
 			//setup with real access codes
-			$this->twt = new NTwitter($creds['api_key'],$creds['api_secret'],
-				$creds['access_token'],$creds['access_secret']);
+			$this->twt = new NTwitter($creds['api_key'], $creds['api_secret'],
+				$creds['access_token'], $creds['access_secret']);
 			$this->loaded = TRUE;
 		}
-		if(!is_array($to))
+		if (!is_array($to)) {
 			$to = array($to);
-		return self::DoSend($to,$body);
+		}
+		return self::DoSend($to, $body);
 	}
 
 	/**
@@ -155,28 +150,24 @@ class TweetSender
 	public function ValidateAddress($address)
 	{
 		$pattern = '/^@\w{1,15}$/';
-		if(!is_array($address))
-		{
-			if(strpos($address,',') === FALSE)
-			{
+		if (!is_array($address)) {
+			if (strpos($address, ',') === FALSE) {
 				$to = trim($address);
-				if(preg_match($pattern,$to))
-				{
+				if (preg_match($pattern, $to)) {
 					$this->skips = FALSE;
 					return array($to);
 				}
 				$this->skips = array($to);
 				return FALSE;
 			}
-			$address = explode(',',$address);
+			$address = explode(',', $address);
 		}
 		$valid = array();
 		$skips = array();
-		foreach($address as $one)
-		{
+		foreach ($address as $one) {
 			if (!is_array($one)) { //ignore email-destinations like name=>address
 				$to = trim($one);
-				if(preg_match($pattern,$to)) {
+				if (preg_match($pattern, $to)) {
 					$valid[] = $to;
 				} else {
 					$skips[] = $to;
@@ -186,8 +177,9 @@ class TweetSender
 			}
 		}
 		$this->skips = $skips;
-		if($valid)
+		if ($valid) {
 			return array_unique($valid);
+		}
 		return FALSE;
 	}
 
@@ -198,7 +190,7 @@ class TweetSender
 	public function ModuleAppTokens()
 	{
 		$funcs = new notifier_utils();
-		return array($this->api_key,$funcs->decrypt_value($this->mod,$this->api_secret));
+		return array($this->api_key,$funcs->decrypt_value($this->mod, $this->api_secret));
 	}
 
 	/**
@@ -209,16 +201,19 @@ class TweetSender
 	@priv: private-key to be saved
 	Returns: boolean - whether the save succeeded
 	*/
-	public function SaveTokens($handle,$pub,$priv)
+	public function SaveTokens($handle, $pub, $priv)
 	{
-		if(!$pub || !$priv || !$handle)
+		if (!$pub || !$priv || !$handle) {
 			return FALSE;
-		if($handle[0] != '@')
+		}
+		if ($handle[0] != '@') {
 			$handle = '@'.$handle;
-		if(!self::ValidateAddress($handle))
+		}
+		if (!self::ValidateAddress($handle)) {
 			return FALSE;
+		}
 		$funcs = new notifier_utils();
-		$priv = $funcs->encrypt_value($this->mod,$priv);
+		$priv = $funcs->encrypt_value($this->mod, $priv);
 		$db = cmsms()->GetDb();
 		$pref = cms_db_prefix();
 		//upsert, sort-of
@@ -229,8 +224,8 @@ class TweetSender
 'module_tell_tweeter (handle,pubtoken,privtoken) SELECT ?,?,? FROM (SELECT 1 AS dmy) Z WHERE NOT EXISTS (SELECT 1 FROM '.
 	$pref.'module_tell_tweeter T WHERE T.handle=?)';
 		$a2 = array($handle,$pub,$priv,$handle);
-		$db->Execute($sql1,$a1);
-		$db->Execute($sql2,$a2);
+		$db->Execute($sql1, $a1);
+		$db->Execute($sql2, $a2);
 		return TRUE;
 	}
 
@@ -271,15 +266,13 @@ class TweetSender
 		$pref = cms_db_prefix();
 		$db = cmsms()->GetDb();
 		$ret = $db->GetCol('SELECT handle FROM '.$pref.'module_tell_tweeter');
-		if($ret)
-		{
-			if($default)
-				array_unshift($ret,'@CMSMSNotifier');
-		}
-		elseif($default)
+		if ($ret) {
+			if ($default) {
+				array_unshift($ret, '@CMSMSNotifier');
+			}
+		} elseif ($default) {
 			$ret = array('@CMSMSNotifier');
+		}
 		return $ret;
 	}
 }
-
-?>

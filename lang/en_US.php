@@ -122,4 +122,3 @@ The returned value is an array with keys 'text','mail', and 'tweet', and each re
 <p>Copyright &copy; 2016 Tom Phane. All rights reserved.</p>
 <p>This module has been released under version 3 of the <a href="http://www.gnu.org/licenses/agpl.html">GNU Affero General Public License</a>, and may be used only in accordance with the terms of that licence, or any later version of that license which is applied to the module by its distributor.<br />
 EOS;
-?>

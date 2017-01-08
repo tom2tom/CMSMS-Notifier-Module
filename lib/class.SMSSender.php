@@ -16,30 +16,29 @@ class SMSSender
 	private $addplus; //whether gateway requires a leading '+' in the country-prefix, if any
 	private $notifutils;
 
-	function __construct()
+	public function __construct()
 	{
 		$ob = cms_utils::get_module('SMSG');
-		if($ob)
-		{
+		if ($ob) {
 			unset($ob);
 			$this->notifutils = FALSE;
 			$this->utils = new smsg_utils();
 			$this->gateway = $this->utils->get_gateway();
-			if($this->gateway)
-			{
+			if ($this->gateway) {
 				$this->addplus = FALSE;
-				if(method_exists($this->gateway,'support_custom_sender'))
+				if (method_exists($this->gateway, 'support_custom_sender')) {
 					$this->fromnum = $this->gateway->support_custom_sender();
-				else
+				} else {
 					$this->fromnum = FALSE;
-				if(method_exists($this->gateway,'require_country_prefix'))
-				{
-					$this->addprefix = $this->gateway->require_country_prefix();
-					if($this->addprefix && method_exists($this->gateway,'require_plus_prefix'))
-						$this->addplus = $this->gateway->require_plus_prefix();
 				}
-				else
+				if (method_exists($this->gateway, 'require_country_prefix')) {
+					$this->addprefix = $this->gateway->require_country_prefix();
+					if ($this->addprefix && method_exists($this->gateway, 'require_plus_prefix')) {
+						$this->addplus = $this->gateway->require_plus_prefix();
+					}
+				} else {
 					$this->addprefix = TRUE;
+				}
 				return;
 			}
 		}
@@ -49,36 +48,36 @@ class SMSSender
 	/*
 	 $number is string with no whitespace, $prefix is string [+]digit(s) and maybe whitespace, or FALSE
 	*/
-	private function AdjustPhone($number,$prefix)
+	private function AdjustPhone($number, $prefix)
 	{
-		if(!$this->addprefix)
-		{
-			if(!$this->addplus && $number[0] == '+')
-				$number = substr($number,1); //assume it's already a full number i.e. +countrylocal
+		if (!$this->addprefix) {
+			if (!$this->addplus && $number[0] == '+') {
+				$number = substr($number, 1);
+			} //assume it's already a full number i.e. +countrylocal
 			return $number;
 		}
-		if($prefix)
-		{
-			$p = str_replace(' ','',$prefix);
-			if($p[0] == '+')
-				$p = substr($p,1);
-		}
-		else
+		if ($prefix) {
+			$p = str_replace(' ', '', $prefix);
+			if ($p[0] == '+') {
+				$p = substr($p, 1);
+			}
+		} else {
 			$p = '';
+		}
 
 		$l = strlen($p);
-		if($l > 0)
-		{
-			if(substr($number,0,$l) != $p)
-			{
-				if($number[0] === '0')
-					$number = $p.substr($number,1);
+		if ($l > 0) {
+			if (substr($number, 0, $l) != $p) {
+				if ($number[0] === '0') {
+					$number = $p.substr($number, 1);
+				}
 			}
 		}
-		if($this->addplus && $number[0] != '+')
+		if ($this->addplus && $number[0] != '+') {
 			$number = '+'.$number;
-		elseif(!$this->addplus && $number[0] == '+')
-			$number = substr($number,1);
+		} elseif (!$this->addplus && $number[0] == '+') {
+			$number = substr($number, 1);
+		}
 		return $number;
 	}
 
@@ -94,29 +93,31 @@ class SMSSender
 	 [0] FALSE if no addressee or no SMSG-module gateway, otherwise boolean cumulative result of gateway->send()
 	 [1] '' or error message e.g. from gateway->send() to $to
 	*/
-	private function DoSend(&$mod,$prefix,$to,$from,$body)
+	private function DoSend(&$mod, $prefix, $to, $from, $body)
 	{
-		if(!$to)
+		if (!$to) {
 			return array(FALSE,'');
-		if(!$this->gateway)
+		}
+		if (!$this->gateway) {
 			return array(FALSE,$mod->Lang('err_system'));
-		if(!$body || !$this->utils->text_is_valid($body))
+		}
+		if (!$body || !$this->utils->text_is_valid($body)) {
 			return array(FALSE,$mod->Lang('err_text').' \''.$body.'\'');
-		if($from && $this->fromnum)
-		{
-			$from = self::AdjustPhone($from,$prefix);
+		}
+		if ($from && $this->fromnum) {
+			$from = self::AdjustPhone($from, $prefix);
 			$this->gateway->set_from($from);
 		}
 		$this->gateway->set_msg($body);
 		$err = '';
 		//assume gateway doesn't support batching
-		foreach($to as $num)
-		{
-			$num = self::AdjustPhone($num,$prefix);
+		foreach ($to as $num) {
+			$num = self::AdjustPhone($num, $prefix);
 			$this->gateway->set_num($num);
-			if(!$this->gateway->send())
-			{
-				if($err) $err .= '<br />';
+			if (!$this->gateway->send()) {
+				if ($err) {
+					$err .= '<br />';
+				}
 				$err .= $num.': '.$this->gateway->get_statusmsg();
 			}
 		}
@@ -139,17 +140,19 @@ class SMSSender
 	{
 		$mod = cms_utils::get_module('Notifier'); //self
 		extract($parms);
-		if($prefix && !is_numeric($prefix))
-		{
-			if(!$this->notifutils)
+		if ($prefix && !is_numeric($prefix)) {
+			if (!$this->notifutils) {
 				$this->notifutils = new notifier_utils();
+			}
 			$prefix = (string)$this->notifutils->phoneprefix(trim($prefix));
 		}
-		if(!is_array($to))
+		if (!is_array($to)) {
 			$to = array($to);
-		if(!isset($from))
+		}
+		if (!isset($from)) {
 			$from = FALSE;
-		return self::DoSend($mod,$prefix,$to,$from,$body);
+		}
+		return self::DoSend($mod, $prefix, $to, $from, $body);
 	}
 
 	/**
@@ -161,31 +164,30 @@ class SMSSender
 	@pattern: regex for matching acceptable phone nos (to be applied after any whitespace is removed)
 	Returns: array of trimmed valid phone no(s), or FALSE
 	*/
-	public function ValidateAddress($address,$pattern)
+	public function ValidateAddress($address, $pattern)
 	{
 		$this->skips = FALSE;
-		if(!$pattern)
+		if (!$pattern) {
 			return FALSE;
+		}
 		$pattern = '~'.$pattern.'~';
-		if(!is_array($address))
-		{
-			if(strpos($address,',') === FALSE)
-			{
-				$to = str_replace(' ','',$address);
-				if(preg_match($pattern,$to))
+		if (!is_array($address)) {
+			if (strpos($address, ',') === FALSE) {
+				$to = str_replace(' ', '', $address);
+				if (preg_match($pattern, $to)) {
 					return array($to);
+				}
 				$this->skips = array(trim($address));
 				return FALSE;
 			}
-			$address = explode(',',$address);
+			$address = explode(',', $address);
 		}
 		$valid = array();
 		$skips = array();
-		foreach($address as $one)
-		{
+		foreach ($address as $one) {
 			if (!is_array($one)) { //ignore email-destinations like name=>address
-				$to = str_replace(' ','',$one);
-				if(preg_match($pattern,$to)) {
+				$to = str_replace(' ', '', $one);
+				if (preg_match($pattern, $to)) {
 					$valid[] = $to;
 				} else {
 					$skips[] = trim($one);
@@ -195,10 +197,9 @@ class SMSSender
 			}
 		}
 		$this->skips = $skips;
-		if($valid)
+		if ($valid) {
 			return array_unique($valid);
+		}
 		return FALSE;
 	}
 }
-
-?>

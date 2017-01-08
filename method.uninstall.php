@@ -15,5 +15,3 @@ $this->RemovePreference();
 
 $this->RemovePermission('SeeNotifierProperties');
 $this->RemovePermission('ModifyNotifierProperties');
-
-?>

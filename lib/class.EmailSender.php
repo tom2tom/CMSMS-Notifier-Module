@@ -12,19 +12,17 @@ class EmailSender
 	public $skips; //array of trimmed addresses ignored during validation, or FALSE
 	private $loaded;
 
-	function __construct()
+	public function __construct()
 	{
 		global $CMS_VERSION;
-		if(version_compare($CMS_VERSION,'2.0') < 0)
-		{
+		if (version_compare($CMS_VERSION, '2.0') < 0) {
 			$this->mlr = cms_utils::get_module('CMSMailer');
-			if($this->mlr)
+			if ($this->mlr) {
 				$this->loaded = FALSE;
-			else
+			} else {
 				throw new NoHelperException();
-		}
-		else
-		{
+			}
+		} else {
 			$this->mlr = new cms_mailer();
 			$this->loaded = TRUE;
 		}
@@ -47,77 +45,70 @@ class EmailSender
 	 [0] FALSE if no destination or no mailer module, otherwise boolean result of mlr->Send()
 	 [1] '' or error message e.g. from mlr->Send()
 	*/
-	private function DoSend(&$mod,$subject,$to,$cc,$bcc,$from,$body,$html=FALSE)
+	private function DoSend(&$mod, $subject, $to, $cc, $bcc, $from, $body, $html=FALSE)
 	{
-		if(!($to || $cc))
+		if (!($to || $cc)) {
 			return array(FALSE,'');
-		if(!$this->mlr)
+		}
+		if (!$this->mlr) {
 			return array(FALSE,$mod->Lang('err_system'));
-		if(!$this->loaded)
-		{
+		}
+		if (!$this->loaded) {
 			$this->mlr->_load();
 			$this->loaded = TRUE;
 		}
 		//TODO	conform message encoding to $mlr->CharSet
 		$m = $this->mlr;
 		$m->reset();
-		if($to)
-		{
-			foreach($to as $name=>$address)
-			{
-				if(is_numeric($name))
+		if ($to) {
+			foreach ($to as $name=>$address) {
+				if (is_numeric($name)) {
 					$name = '';
-				$m->AddAddress($address,$name);
+				}
+				$m->AddAddress($address, $name);
 			}
-			if($cc)
-			{
-				foreach($cc as $name=>$address)
-				{
-					if(is_numeric($name))
+			if ($cc) {
+				foreach ($cc as $name=>$address) {
+					if (is_numeric($name)) {
 						$name = '';
-					$m->AddCC($address,$name);
+					}
+					$m->AddCC($address, $name);
 				}
 			}
-		}
-		elseif($cc)
-		{
-			foreach($cc as $name=>$address)
-			{
-				if(is_numeric($name))
+		} elseif ($cc) {
+			foreach ($cc as $name=>$address) {
+				if (is_numeric($name)) {
 					$name = '';
-				$m->AddAddress($address,$name);
+				}
+				$m->AddAddress($address, $name);
 			}
 		}
-		if($bcc)
-		{
-			foreach($bcc as $name=>$address)
-			{
-				if(is_numeric($name))
+		if ($bcc) {
+			foreach ($bcc as $name=>$address) {
+				if (is_numeric($name)) {
 					$name = '';
-				$m->AddBCC($address,$name);
+				}
+				$m->AddBCC($address, $name);
 			}
 		}
-		if($from) //default sender isn't wanted
-		{
+		if ($from) { //default sender isn't wanted
 			$name = key($from);
-			if(is_numeric($name))
+			if (is_numeric($name)) {
 				$name = '';
-			$m->SetFrom(reset($from),$name);
+			}
+			$m->SetFrom(reset($from), $name);
 		}
 		$m->SetSubject($subject);
 		$m->IsHTML($html);
-		if($html)
-		{
+		if ($html) {
 			$m->SetBody($body);
 			//PHP is bad at setting suitable line-breaks
 			$tbody = str_replace(
-				array('<br /><br />','<br />','<br><br>','<br>'),
-				array('','','',''),$body);
+				array('<br /><br />', '<br />', '<br><br>', '<br>'),
+				array('', '', '', ''), $body);
 			$tbody = strip_tags(html_entity_decode($tbody));
 			$m->SetAltBody($tbody);
-		}
-		else
-		{
+		} else {
 			$m->SetBody(html_entity_decode($body));
 		}
 		$res = $m->Send();
@@ -145,23 +136,28 @@ class EmailSender
 	{
 		$mod = cms_utils::get_module('Notifier'); //self
 		extract($parms);
-		if(!is_array($to))
+		if (!is_array($to)) {
 			$to = array($to);
-		if(!isset($cc))
+		}
+		if (!isset($cc)) {
 			$cc = FALSE;
-		elseif($cc && !is_array($cc))
+		} elseif ($cc && !is_array($cc)) {
 			$cc = array($cc);
-		if(!isset($bcc))
+		}
+		if (!isset($bcc)) {
 			$bcc = FALSE;
-		elseif($bcc && !is_array($bcc))
+		} elseif ($bcc && !is_array($bcc)) {
 			$bcc = array($bcc);
-		if(!isset($from))
+		}
+		if (!isset($from)) {
 			$from = FALSE;
-		elseif($from && !is_array($from))
+		} elseif ($from && !is_array($from)) {
 			$from = array($from);
-		if(!isset($html))
+		}
+		if (!isset($html)) {
 			$html = FALSE;
-		return self::DoSend($mod,$subject,$to,$cc,$bcc,$from,$body,$html);
+		}
+		return self::DoSend($mod, $subject, $to, $cc, $bcc, $from, $body, $html);
 	}
 
 	/**
@@ -178,51 +174,46 @@ class EmailSender
 		//pretty much everything is valid, provided there's an '@' in there!
 		//more-complicated patterns like RFC2822 are overkill
 		$pattern = '/.+@.+\..+/';
-		if(!is_array($address))
-		{
-			if(strpos($address,',') === FALSE)
-			{
+		if (!is_array($address)) {
+			if (strpos($address, ',') === FALSE) {
 				$to = trim($address);
-				if(preg_match($pattern,$to))
-				{
+				if (preg_match($pattern, $to)) {
 					$this->skips = FALSE;
 					return array($to);
 				}
 				$this->skips = array($to);
 				return FALSE;
 			}
-			$address = explode(',',$address);
+			$address = explode(',', $address);
 		}
 		$named = array();
 		$anon = array();
 		$skips = array();
-		foreach($address as $one)
-		{
-			if(is_array($one)) //like name=>address
-			{
+		foreach ($address as $one) {
+			if (is_array($one)) { //like name=>address
 				$to = trim(reset($one));
 				$k = key($one);
-				if(preg_match($pattern,$to))
+				if (preg_match($pattern, $to)) {
 					$named[$k] = $to;
-				else
+				} else {
 					$skips[] = array($k=>$to);
-			}
-			else
-			{
+				}
+			} else {
 				$to = trim($one);
-				if(preg_match($pattern,$to))
+				if (preg_match($pattern, $to)) {
 					$anon[] = $to;
-				else
+				} else {
 					$skips[] = $to;
+				}
 			}
 		}
 		$this->skips = $skips;
-		if($anon)
+		if ($anon) {
 			$anon = array_unique($anon);
-		if($named || $anon)
-			return array_merge($named,$anon);
+		}
+		if ($named || $anon) {
+			return array_merge($named, $anon);
+		}
 		return FALSE;
 	}
 }
-
-?>
