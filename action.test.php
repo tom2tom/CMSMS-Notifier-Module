@@ -13,12 +13,12 @@ $to = $params['address'];
 if(!$to)
 	$this->Redirect($id,'defaultadmin',$returnid,array('activetab'=>'test'));
 
+$pattern = (!empty($params['smspattern'])) ? $params['smspattern']:$this->GetPreference('smspattern');
 $funcs = new MessageSender();
 $clean = $funcs->ValidateAddress($to,$pattern);
 if($clean['text']) //valid phone
 {
 	$prefix = (!empty($params['smsprefix'])) ? $params['smsprefix']:$this->GetPreference('smsprefix');
-	$pattern = (!empty($params['smspattern'])) ? $params['smspattern']:$this->GetPreference('smspattern');
 	$body = 'The CMSMS Notifier module sent this test-message';
 	$parms = array('prefix'=>$prefix,'pattern'=>$pattern,'body'=>$body);
 	list($res,$msg) = $funcs->Send(FALSE,$clean['text'],$parms,FALSE,FALSE);
