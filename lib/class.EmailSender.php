@@ -178,7 +178,7 @@ class EmailSender
 		//pretty much everything is valid, provided there's an '@' in there!
 		//more-complicated patterns like RFC2822 are overkill
 		$pattern = '/.+@.+\..+/';
-		if(!is_array($address[0]))
+		if(!is_array($address))
 		{
 			if(strpos($address,',') === FALSE)
 			{

@@ -167,7 +167,7 @@ class SMSSender
 		if(!$pattern)
 			return FALSE;
 		$pattern = '~'.$pattern.'~';
-		if(!is_array($address[0]))
+		if(!is_array($address))
 		{
 			if(strpos($address,',') === FALSE)
 			{

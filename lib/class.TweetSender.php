@@ -155,7 +155,7 @@ class TweetSender
 	public function ValidateAddress($address)
 	{
 		$pattern = '/^@\w{1,15}$/';
-		if(!is_array($address[0]))
+		if(!is_array($address))
 		{
 			if(strpos($address,',') === FALSE)
 			{
