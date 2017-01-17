@@ -24,9 +24,10 @@
  * Requires:
  * mcrypt extension
  */
+//namespace Notifier;
+
 class Encryption
 {
-
 	/**
 	 * @var string $cipher The mcrypt cipher to use for this instance
 	 */
