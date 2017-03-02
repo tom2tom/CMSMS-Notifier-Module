@@ -5,6 +5,7 @@
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
+namespace Notifier;
 
 class EmailSender
 {
@@ -16,14 +17,14 @@ class EmailSender
 	{
 		global $CMS_VERSION;
 		if (version_compare($CMS_VERSION, '2.0') < 0) {
-			$this->mlr = cms_utils::get_module('CMSMailer');
+			$this->mlr = \cms_utils::get_module('CMSMailer');
 			if ($this->mlr) {
 				$this->loaded = FALSE;
 			} else {
 				throw new NoHelperException();
 			}
 		} else {
-			$this->mlr = new cms_mailer();
+			$this->mlr = new \cms_mailer();
 			$this->loaded = TRUE;
 		}
 	}
@@ -134,7 +135,7 @@ class EmailSender
 	*/
 	public function Send($parms)
 	{
-		$mod = cms_utils::get_module('Notifier'); //self
+		$mod = \cms_utils::get_module('Notifier'); //self
 		extract($parms);
 		if (!is_array($to)) {
 			$to = array($to);

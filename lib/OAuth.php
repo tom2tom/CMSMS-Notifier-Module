@@ -23,10 +23,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+namespace Notifier;
 
 /* Generic exception class
  */
-class Twitter_OAuthException extends Exception
+class Twitter_OAuthException extends \Exception
 {
 	// pass
 }
@@ -851,7 +852,7 @@ class Twitter_OAuthUtil
 	public static function urlencode_rfc3986($input)
 	{
 		if (is_array($input)) {
-			return array_map(array('Twitter_OAuthUtil', 'urlencode_rfc3986'), $input);
+			return array_map(array('Notifier\Twitter_OAuthUtil', 'urlencode_rfc3986'), $input);
 		} elseif (is_scalar($input)) {
 			return str_replace(
 				'+',

@@ -5,8 +5,9 @@
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
+namespace Notifier;
 
-class NoHelperException extends Exception
+class NoHelperException extends \Exception
 {
 }
 
@@ -174,7 +175,7 @@ class MessageSender
 			}
 		}
 
-		$mod = cms_utils::get_module('Notifier'); //self
+		$mod = \cms_utils::get_module('Notifier'); //self
 		if (isset($res)) {
 			//cleanups to match class-specific verifiers
 			foreach ($to as $i=>&$one) {

@@ -13,7 +13,7 @@ if (!($pmod || $psee)) {
 	exit;
 }
 
-$funcs = new notifier_utils();
+$funcs = new Notifier\Utils();
 if (isset($params['submit'])) {
 	if ($pmod) {
 		$this->SetPreference('smspattern', $params['smspattern']);
@@ -277,4 +277,4 @@ if ($jsloads) {
 $tplvars['jsfuncs'] = $jsfuncs;
 $tplvars['jsincs'] = $jsincs;
 
-echo notifier_utils::ProcessTemplate($this, 'adminpanel.tpl', $tplvars);
+echo Notifier\Utils::ProcessTemplate($this, 'adminpanel.tpl', $tplvars);

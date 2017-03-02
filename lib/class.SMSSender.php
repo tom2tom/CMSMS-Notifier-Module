@@ -5,6 +5,7 @@
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
+namespace Notifier;
 
 class SMSSender
 {
@@ -18,11 +19,11 @@ class SMSSender
 
 	public function __construct()
 	{
-		$ob = cms_utils::get_module('SMSG');
+		$ob = \cms_utils::get_module('SMSG');
 		if ($ob) {
 			unset($ob);
 			$this->notifutils = FALSE;
-			$this->utils = new smsg_utils();
+			$this->utils = new \smsg_utils();
 			$this->gateway = $this->utils->get_gateway();
 			if ($this->gateway) {
 				$this->addplus = FALSE;
@@ -138,11 +139,11 @@ class SMSSender
 	*/
 	public function Send($parms)
 	{
-		$mod = cms_utils::get_module('Notifier'); //self
+		$mod = \cms_utils::get_module('Notifier'); //self
 		extract($parms);
 		if ($prefix && !is_numeric($prefix)) {
 			if (!$this->notifutils) {
-				$this->notifutils = new notifier_utils();
+				$this->notifutils = new Utils();
 			}
 			$prefix = (string)$this->notifutils->phoneprefix(trim($prefix));
 		}

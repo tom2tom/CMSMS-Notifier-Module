@@ -5,6 +5,7 @@
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
+namespace Notifier;
 
 class TweetSender
 {
@@ -24,13 +25,13 @@ class TweetSender
 		try {
 			//construction checks some pre-req's but NOT the validity of the supplied codes!
 			//real credentials set before first use
-			$this->twt = new NTwitter('dummy', 'dummy');
+			$this->twt = new Twitter('dummy', 'dummy');
 		} catch (TwitterException $e) {
 			$this->twt = FALSE;
 			throw new NoHelperException();
 		}
 		if (is_null($mod)) {
-			$mod = cms_utils::get_module('Notifier');
+			$mod = \cms_utils::get_module('Notifier');
 		}
 		$this->mod = $mod;
 		$this->api_secret = $mod->GetPreference('privapi');
@@ -92,14 +93,15 @@ class TweetSender
 	{
 		extract($parms);
 		if (!$this->loaded) {
-			$funcs = new notifier_utils();
+			$funcs = new Utils();
 			if ($handle) {
 				if ($handle = '@CMSMSNotifier') {
 					$pubtoken = $this->api_key;
 					$privtoken = $funcs->decrypt_value($this->mod, $this->api_secret);
 				} else {
-					$db = cmsms()->GetDb();
-					$sql = 'SELECT pubtoken,privtoken FROM '.cms_db_prefix().'module_tell_tweeter WHERE handle=?';
+					$pre = \cms_db_prefix();
+					$sql = 'SELECT pubtoken,privtoken FROM '.$pre.'module_tell_tweeter WHERE handle=?';
+					$db = \cmsms()->GetDb();
 					$vals = $db->GetOne($sql, array($handle));
 					if (!$vals) {
 						return array(FALSE,'TODO');
@@ -129,7 +131,7 @@ class TweetSender
 				);
 			}
 			//setup with real access codes
-			$this->twt = new NTwitter($creds['api_key'], $creds['api_secret'],
+			$this->twt = new Twitter($creds['api_key'], $creds['api_secret'],
 				$creds['access_token'], $creds['access_secret']);
 			$this->loaded = TRUE;
 		}
@@ -189,7 +191,7 @@ class TweetSender
 	*/
 	public function ModuleAppTokens()
 	{
-		$funcs = new notifier_utils();
+		$funcs = new Utils();
 		return array($this->api_key,$funcs->decrypt_value($this->mod, $this->api_secret));
 	}
 
@@ -212,10 +214,10 @@ class TweetSender
 		if (!self::ValidateAddress($handle)) {
 			return FALSE;
 		}
-		$funcs = new notifier_utils();
+		$funcs = new Utils();
 		$priv = $funcs->encrypt_value($this->mod, $priv);
-		$db = cmsms()->GetDb();
-		$pref = cms_db_prefix();
+		$db = \cmsms()->GetDb();
+		$pref = \cms_db_prefix();
 		//upsert, sort-of
 		$sql1 = 'UPDATE '.$pref.
 'module_tell_tweeter SET pubtoken=?,privtoken=? WHERE handle=?';
@@ -263,8 +265,8 @@ class TweetSender
 	*/
 	public function GetHandles($default=TRUE)
 	{
-		$pref = cms_db_prefix();
-		$db = cmsms()->GetDb();
+		$pref = \cms_db_prefix();
+		$db = \cmsms()->GetDb();
 		$ret = $db->GetCol('SELECT handle FROM '.$pref.'module_tell_tweeter');
 		if ($ret) {
 			if ($default) {

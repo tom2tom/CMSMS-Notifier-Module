@@ -7,11 +7,11 @@
 #----------------------------------------------------------------------
 
 try {
-	$twt = new TweetSender($this);
+	$twt = new Notifier\TweetSender($this);
 	if (isset($params['start'])) { //action initiated
 		list($apipublic, $apiprivate) = $twt->ModuleAppTokens();
 		try {
-			$conn = new TwitterCredential($apipublic, $apiprivate);
+			$conn = new Notifier\TwitterCredential($apipublic, $apiprivate);
 			if (empty($_SERVER['HTTPS'])) {
 				//cleanup & force a secure return-communication, which freaks the browser
 				//first-time, AND stuffs up on-page-include-URLs, requiring a local redirect
@@ -38,7 +38,7 @@ try {
 		}
 		list($apipublic, $apiprivate) = $twt->ModuleAppTokens();
 		try {
-			$conn = new TwitterCredential($apipublic, $apiprivate, $token, NULL);
+			$conn = new Notifier\TwitterCredential($apipublic, $apiprivate, $token, NULL);
 			//seek enduring credentials
 			$token = $conn->getAuthority($verf);
 			if (is_array($token)) {
@@ -48,7 +48,7 @@ try {
 						'title' => $this->Lang('status_complete', $token['screen_name']),
 						'icon' => $this->GetModuleURLPath().'/images/oauth.png'
 					);
-					echo notifier_utils::ProcessTemplate($this, 'tweet_auth.tpl', $tplvars);
+					echo Notifier\Utils::ProcessTemplate($this, 'tweet_auth.tpl', $tplvars);
 					return;
 				} else {
 					$message = $this->Lang('err_data_type', $this->Lang('err_token'));
@@ -77,4 +77,4 @@ if (!empty($message)) {
 	$tplvars['message'] = $message;
 } //tell about success or failure
 
-echo notifier_utils::ProcessTemplate($this, 'tweet_auth.tpl', $tplvars);
+echo Notifier\Utils::ProcessTemplate($this, 'tweet_auth.tpl', $tplvars);

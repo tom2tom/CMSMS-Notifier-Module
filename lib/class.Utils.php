@@ -1,14 +1,15 @@
 <?php
 #----------------------------------------------------------------------
 # Module: Notifier - a communications module
-# Library file: notifier_utils
+# Library file: Utils
 #----------------------------------------------------------------------
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
+namespace Notifier;
 
-class notifier_utils
+class Utils
 {
-	const STRETCHES = 10000;
+	const STRETCHES = 10240;
 	/**
 	encrypt_value:
 	@mod: reference to current module object
@@ -24,7 +25,7 @@ class notifier_utils
 				$passwd = self::unfusc($mod->GetPreference('masterpass'));
 			}
 			if ($passwd && $mod->havemcrypt) {
-				$e = new Encryption(MCRYPT_TWOFISH, MCRYPT_MODE_CBC, self::STRETCHES);
+				$e = new Encryption('BF-CBC', 'default', self::STRETCHES);
 				$value = $e->encrypt($value, $passwd);
 				if ($based) {
 					$value = base64_encode($value);
@@ -54,7 +55,7 @@ class notifier_utils
 				if ($based) {
 					$value = base64_decode($value);
 				}
-				$e = new Encryption(MCRYPT_TWOFISH, MCRYPT_MODE_CBC, self::STRETCHES);
+				$e = new Encryption('BF-CBC', 'default', self::STRETCHES);
 				$value = $e->decrypt($value, $passwd);
 			} else {
 				$value = substr(strlen($passwd), self::unfusc($value));
@@ -108,7 +109,7 @@ class notifier_utils
 		} else {
 			if ($cache) {
 				$cache_id = md5('tell'.$tplname.serialize(array_keys($tplvars)));
-				$lang = CmsNlsOperations::get_current_language();
+				$lang = \CmsNlsOperations::get_current_language();
 				$compile_id = md5('tell'.$tplname.$lang);
 				$tpl = $smarty->CreateTemplate($mod->GetFileResource($tplname), $cache_id, $compile_id, $smarty);
 				if (!$tpl->isCached()) {
@@ -442,7 +443,7 @@ class notifier_utils
 	*/
 	public function get_auth($id='m1_', $returnid = '')
 	{
-		$mod = cms_utils::get_module('Notifier'); //self
+		$mod = \cms_utils::get_module('Notifier'); //self
 		$mod->DoAction('twitauth', $id, array('start'=>1), $returnid);
 	}
 }

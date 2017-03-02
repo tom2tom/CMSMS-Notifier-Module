@@ -17,7 +17,7 @@ if (!$to) {
 }
 
 $pattern = (!empty($params['smspattern'])) ? $params['smspattern']:$this->GetPreference('smspattern');
-$funcs = new MessageSender();
+$funcs = new Notifier\MessageSender();
 $clean = $funcs->ValidateAddress($to, $pattern);
 if ($clean['text']) { //valid phone
 	$prefix = (!empty($params['smsprefix'])) ? $params['smsprefix']:$this->GetPreference('smsprefix');

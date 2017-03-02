@@ -1,6 +1,8 @@
 <?php
 
-class TwitterCredential extends NTwitter
+namespace Notifier;
+
+class TwitterCredential extends Twitter
 {
 	public function __construct($consumerKey, $consumerSecret, $accessToken = NULL, $accessTokenSecret = NULL)
 	{
