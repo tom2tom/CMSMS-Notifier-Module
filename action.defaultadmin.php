@@ -13,26 +13,26 @@ if (!($pmod || $psee)) {
 	exit;
 }
 
-$funcs = new Notifier\Utils();
+$utils = new Notifier\Utils();
 if (isset($params['submit'])) {
 	if ($pmod) {
 		$this->SetPreference('smspattern', $params['smspattern']);
 		$this->SetPreference('smsprefix', $params['smsprefix']);
 
-		$oldpw = $this->GetPreference('masterpass');
-		if ($oldpw) {
-			$oldpw = $funcs->unfusc($oldpw);
-		}
-
+		$oldpw = $utils->decrypt_preference($this, 'masterpass');
 		$newpw = trim($params['masterpass']);
 		if ($oldpw != $newpw) {
 			//update all data which uses current password
-			$t = $funcs->decrypt_value($mod, $this->GetPreference('privaccess'), $oldpw);
-			$t = ($newpw) ?	$funcs->encrypt_value($mod, $t, $newpw):$funcs->fusc($t);
+			$t = $utils->decrypt_value($this, $this->GetPreference('privaccess'), $oldpw);
+			if ($newpw) {
+				$t = $utils->encrypt_value($this, $t, $newpw);
+			}
 			$this->SetPreference('privaccess', $t);
 
-			$t = $funcs->decrypt_value($mod, $this->GetPreference('privapi'), $oldpw);
-			$t = ($newpw) ?	$funcs->encrypt_value($mod, $t, $newpw):$funcs->fusc($t);
+			$t = $utils->decrypt_value($this, $this->GetPreference('privapi'), $oldpw);
+			if ($newpw) {
+				$t = $utils->encrypt_value($this, $t, $newpw);
+			}
 			$this->SetPreference('privapi', $t);
 
 			$pre = cms_db_prefix();
@@ -41,8 +41,10 @@ if (isset($params['submit'])) {
 			if ($rst) {
 				$sql = 'UPDATE '.$pre.'module_tell_tweeter SET privtoken=? WHERE auth_id=?';
 				while (!$rst->EOF) {
-					$t = $funcs->decrypt_value($mod, $rst->fields[1], $oldpw);
-					$t = ($newpw) ?	$funcs->encrypt_value($mod, $t, $newpw):$funcs->fusc($t);
+					$t = $utils->decrypt_value($this, $rst->fields[1], $oldpw);
+					if ($newpw) {
+						$t = $utils->encrypt_value($this, $t, $newpw);
+					}
 					$db->Execute($sql, array($t, $rst->fields[0]));
 					if (!$rst->MoveNext()) {
 						break;
@@ -52,10 +54,7 @@ if (isset($params['submit'])) {
 			}
 			//TODO any others ?
 
-			if ($newpw) {
-				$newpw = $funcs->fusc($newpw);
-			}
-			$this->SetPreference('masterpass', $newpw);
+			$utils->encrypt_preference($this, 'masterpass', $newpw);
 		}
 	}
 	$params['activetab'] = 'settings';
@@ -244,11 +243,8 @@ $tplvars += array(
 
 	'title_password' => $this->Lang('title_password')
 );
-$pw = $this->GetPreference('masterpass');
-if ($pw) {
-	$pw = $funcs->unfusc($pw);
-}
 
+$pw = $utils->decrypt_preference($this, 'masterpass');
 $tplvars['input_password'] =
 	$this->CreateTextArea(FALSE, $id, $pw, 'masterpass', 'cloaked',
 		$id.'passwd', '', '', 40, 2);
