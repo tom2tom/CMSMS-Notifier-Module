@@ -23,9 +23,10 @@ $tblname = cms_db_prefix().'module_tell_tweeter';
 $sql = $dict->CreateTableSQL($tblname, $flds, $taboptarray);
 $dict->ExecuteSQLArray($sql);
 
-$this->SetPreference('masterpass', 'OWFmNT1dGbU5FbnRlciBhdCB5b3VyIG93biByaXNrISBEYW5nZXJvdXMgZGF0YSE=');
-$this->SetPreference('privaccess', '9eLpsFmdA9BTD7YkP6TWL5z0VRXMZfNRF/YRWFm+dcpe0pO0LHGfm5U84FXuOHXad1dzDA1bqQDqkvU14ybVcPsSFF5TCc5OhX/lGUsXyPu04MDW96a2xopq5CPSxybVStaUvitCavpGw2IJbNOQKS9XWKWUhGoJrLKMOKN6ToXfF5IC/T5fMS95j83zsYpziiihxgK1xB+sm+Rj6y9c1zPx/jvqKKoRH/hJsy53MJIvM3ED8uChNqA+8PZHPlS/5UN4PS6UQmBuUPtM3r0S0P/8WrIzP+gkSpQ8oq3nt0u+ly/4GQHMo16I2KrMZQUH');
-$this->SetPreference('privapi', 'E+HXtNA+Zzgv+bC0m28ySJ999zNN/Qht/0kKOY1Ma4R+25fFuABXNRBta3ehEiJC520w2U+Az32oZO0Zk06c8WFeM/ajUZZBMqikLu50Uj5S7yAJehB1Nfh7go6CTIsXSNKxRn8MQCkbqN5VLgKyWfWn0M//mY6l1Oq1X05GahGPxQeSXrwwyDpT582ITcjqGWsjtaNmXOtUeX+ufCHdmPjjhl+CNw0hOyDf84u4kGt9kVbHz6CMxWOC+Lsv9YrVXsAIXJeP3PH3adMr7D5S9zSU6CZbI9R+Rg6Ti2TxtNy1DpQ8VIjqa1BUW7j6ngqu9XQk5YTIaPU=');
+$utils = new Notifier\Utils();
+$utils->encrypt_preference ($this, 'masterpass', base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));
+$this->SetPreference('privaccess', 'Ipu4rLD5cvqjq+rAs2sJBs5F/dL7BKsyQRcbhdj9KGlsTc+V+upkvFSzZRfFc/ByEDMc4wq8brAGNPaXAjoMSpB7y3M0g7+4VpwWu2Fn5RDns4OBuolSSEWN2I9+subov+Ad8sgvP9YxcBXVH9SuqdXhro92D4mLozOGwW2z6LfXvrxyelWnGTjDAoFuZdkCEizzVvBoFac=');
+$this->SetPreference('privapi', '2iqqrdjKjJaorkqX3L19umE/BT5Cs4QWd7kZMkc9bhB9WMVBieWCJ8EvnofJ6+5zHnyLa3YNe8u7Xnu/jR9PKy+WxKvOUN32ymh04gZ6r2ueNHw+L1OImXILE+IXzZlqcvx+zzkQix6p9fCCaPA/tNVtXb9N1yhVrgN4gi/aBtsoKSAuqus3Z5RIZgmtS3thDjsX8hp72BLe/bwQc1Gxiw==');
 $this->SetPreference('smspattern', '^(\+|\d)[0-9]{7,16}$'); //for SMS messages to cell/mobile numbers
 $this->SetPreference('smsprefix', '1'); //notifutils->phoneprefix() needs explicit country
 
