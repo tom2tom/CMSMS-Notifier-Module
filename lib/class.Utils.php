@@ -10,6 +10,7 @@ namespace Notifier;
 class Utils
 {
 	const STRETCHES = 10240;
+
 	/**
 	encrypt_value:
 	@mod: reference to current module object
@@ -22,16 +23,14 @@ class Utils
 	{
 		if ($value) {
 			if (!$passwd) {
-				$passwd = self::unfusc($mod->GetPreference('masterpass'));
+				$passwd = self::decrypt_preference($mod, 'masterpass');
 			}
-			if ($passwd && $mod->havemcrypt) {
+			if ($passwd) {
 				$e = new Encryption('BF-CBC', 'default', self::STRETCHES);
 				$value = $e->encrypt($value, $passwd);
 				if ($based) {
 					$value = base64_encode($value);
 				}
-			} else {
-				$value = self::fusc($passwd.$value);
 			}
 		}
 		return $value;
@@ -49,47 +48,49 @@ class Utils
 	{
 		if ($value) {
 			if (!$passwd) {
-				$passwd = self::unfusc($mod->GetPreference('masterpass'));
+				$passwd = self::decrypt_preference($mod, 'masterpass');
 			}
-			if ($passwd && $mod->havemcrypt) {
+			if ($passwd) {
 				if ($based) {
 					$value = base64_decode($value);
 				}
 				$e = new Encryption('BF-CBC', 'default', self::STRETCHES);
 				$value = $e->decrypt($value, $passwd);
-			} else {
-				$value = substr(strlen($passwd), self::unfusc($value));
 			}
 		}
 		return $value;
 	}
 
 	/**
-	fusc:
-	@str: string or FALSE
-	obfuscate @str
+	encrypt_preference:
+	@mod: reference to current Auther module object
+	@value: value to be stored, normally a string
+	@key: module-preferences key
 	*/
-	public function fusc($str)
+	public function encrypt_preference(&$mod, $key, $value)
 	{
-		if ($str) {
-			$s = substr(base64_encode(md5(microtime())), 0, 5);
-			return $s.base64_encode($s.$str);
-		}
-		return '';
+		$config = \cmsms()->GetConfig();
+		$root = (empty($_SERVER['HTTPS'])) ? $config['root_url'] : $config['ssl_url'];
+		$hash = hash('crc32b', $root.$mod->GetModulePath()); //site-dependent
+		$e = new Encryption('BF-CBC', 'default', self::STRETCHES);
+		$st = $e->encrypt($value, $hash);
+		$mod->SetPreference($key, base64_encode($st));
 	}
 
 	/**
-	unfusc:
-	@str: string or FALSE
-	de-obfuscate @str
+	decrypt_preference:
+	@mod: reference to current Auther module object
+	@key: module-preferences key
+	Returns: plaintext string
 	*/
-	public function unfusc($str)
+	public function decrypt_preference(&$mod, $key)
 	{
-		if ($str) {
-			$s = base64_decode(substr($str, 5));
-			return substr($s, 5);
-		}
-		return '';
+		$st = base64_decode($mod->GetPreference($key));
+		$config = \cmsms()->GetConfig();
+		$root = (empty($_SERVER['HTTPS'])) ? $config['root_url'] : $config['ssl_url'];
+		$hash = hash('crc32b', $root.$mod->GetModulePath()); //site-dependent
+		$e = new Encryption('BF-CBC', 'default', self::STRETCHES);
+		return $e->decrypt($st, $hash);
 	}
 
 	/**
