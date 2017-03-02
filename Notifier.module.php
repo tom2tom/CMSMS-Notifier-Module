@@ -16,16 +16,15 @@
 # Read the License online: http://www.gnu.org/licenses/licenses.html#AGPL
 #-----------------------------------------------------------------------
 
+if (!extension_loaded('openssl')) return;
+
 class Notifier extends CMSModule
 {
-	//whether password encryption is supported
-	public $havemcrypt;
 	public $before20;
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->havemcrypt = (function_exists('mcrypt_encrypt'));
 		global $CMS_VERSION;
 		$this->before20 = (version_compare($CMS_VERSION, '2.0') < 0);
 
