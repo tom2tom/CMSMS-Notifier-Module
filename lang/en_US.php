@@ -103,12 +103,12 @@ Then create and supply tweet parameters (credentials, hashtags, other content) l
 <code>\$o = new TweetSender(); \$o-&gt;Send(\$parameters-array);</code>
 <h4>Communication by whatever channel suits the destination address(es)</h4>
 Probably the most effective way to use the module:<br />
-<code>\$o = new MessageSender(); \$o->Send(\$parameters);</code><br />
+<code>\$o = new Notifier\\MessageSender(); \$o->Send(\$parameters);</code><br />
 <br />
 More-secific guidance about all of the above may be found in the
 <a href="%s">sample code file</a>.
 <h4>Address validation</h4>
-<code>\$o = new MessageSender(); \$valid = \$o->ValidateAddress(\$destination);</code><br />
+<code>\$o = new Notifier\\MessageSender(); \$valid = \$o->ValidateAddress(\$destination);</code><br />
 where \$destination is one, or a comma-separated series, or an array, of phone number(s) and/or email address(se) and/or twitter handle(s).
 The returned value is an array with keys 'text','mail', and 'tweet', and each respective value is an array of valid address(es), or FALSE.
 <h3>Support</h3>
