@@ -28,6 +28,56 @@ class Notifier extends CMSModule
 		$this->havemcrypt = (function_exists('mcrypt_encrypt'));
 		global $CMS_VERSION;
 		$this->before20 = (version_compare($CMS_VERSION, '2.0') < 0);
+
+		spl_autoload_register([$this, 'cmsms_spacedload']);
+	}
+
+	public function __destruct()
+	{
+		spl_autoload_unregister([$this, 'cmsms_spacedload']);
+		if (function_exists('parent::__destruct')) {
+			parent::__destruct();
+		}
+	}
+
+	/* namespace autoloader - CMSMS default autoloader doesn't do spacing */
+	private function cmsms_spacedload($class)
+	{
+		$prefix = get_class().'\\'; //our namespace prefix
+		$o = ($class[0] != '\\') ? 0:1;
+		$p = strpos($class, $prefix, $o);
+		if ($p === 0 || ($p == 1 && $o == 1)) {
+			// directory for the namespace
+			$bp = __DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR;
+		} else {
+			$p = strpos($class, '\\', 1);
+			if ($p === FALSE) {
+				return;
+			}
+			$prefix = substr($class, $o, $p-$o);
+			$bp = dirname(__DIR__).DIRECTORY_SEPARATOR.$prefix.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR;
+		}
+		// relative class name
+		$len = strlen($prefix) + $o;
+		$relative_class = trim(substr($class, $len), '\\');
+
+		if (($p = strrpos($relative_class, '\\', -1)) !== FALSE) {
+			$relative_dir = str_replace('\\', DIRECTORY_SEPARATOR, $relative_class);
+			$bp .= substr($relative_dir, 0, $p+1);
+			$base = substr($relative_dir, $p+1);
+		} else {
+			$base = $relative_class;
+		}
+
+		$fp = $bp.'class.'.$base.'.php';
+		if (file_exists($fp)) {
+			include $fp;
+			return;
+		}
+		$fp = $bp.$base.'.php';
+		if (file_exists($fp)) {
+			include $fp;
+		}
 	}
 
 	public function AllowAutoInstall()
