@@ -23,7 +23,7 @@ class SMSSender
 		if ($ob) {
 			unset($ob);
 			$this->notifutils = FALSE;
-			$this->utils = new \smsg_utils();
+			$this->utils = new \SMSG\Utils();
 			$this->gateway = $this->utils->get_gateway();
 			if ($this->gateway) {
 				$this->addplus = FALSE;
