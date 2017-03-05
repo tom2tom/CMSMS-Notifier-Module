@@ -9,52 +9,59 @@ namespace Notifier;
 
 class Crypter Extends Encryption
 {
-	const STRETCHES = 10240;
+	const STRETCHES = 8192;
+	protected $mod;
+	protected $custom;
 
-	__construct($algo='BF-CBC', $stretches=self::STRETCHES)
+	/*
+	constructor:
+	@mod: reference to current module object
+	@method: optional openssl cipher type to use, default 'BF-CBC'
+	@stretches: optional number of extension-rounds to apply, default 8192
+	*/
+	public function __construct(&$mod, $method='BF-CBC', $stretches=self::STRETCHES)
 	{
-		parent::__construct($algo, 'default', $stretches);
+		$this->mod = $mod;
+		$this->custom = \cmsms()->GetConfig()['ssl_url'].$mod->GetModulePath(); //site&module-dependent
+		parent::__construct($method, 'default', $stretches);
 	}
 
 	/**
 	encrypt_preference:
-	@mod: reference to current Auther module object
 	@value: value to be stored, normally a string
 	@key: module-preferences key
 	*/
-	public function encrypt_preference(&$mod, $key, $value)
+	public function encrypt_preference($key, $value)
 	{
-		$pw = hash('crc32b', $mod->GetPreference('nQCeESKBr99A').$mod->GetModulePath()); //site&module-dependent
+		$pw = hash('crc32b', $this->mod->GetPreference('nQCeESKBr99A').$this->custom);
 		$s = parent::encrypt($value, $pw);
-		$mod->SetPreference($key, base64_encode($s));
+		$this->mod->SetPreference($key, base64_encode($s));
 	}
 
 	/**
 	decrypt_preference:
-	@mod: reference to current Auther module object
 	@key: module-preferences key
 	Returns: plaintext string, or FALSE
 	*/
-	public function decrypt_preference(&$mod, $key)
+	public function decrypt_preference($key)
 	{
-		$s = base64_decode($mod->GetPreference($key));
-		$pw = hash('crc32b', $mod->GetPreference('nQCeESKBr99A').$mod->GetModulePath());
+		$s = base64_decode($this->mod->GetPreference($key));
+		$pw = hash('crc32b', $this->mod->GetPreference('nQCeESKBr99A').$this->custom);
 		return parent::decrypt($s, $pw);
 	}
 
 	/**
 	encrypt_value:
-	@mod: reference to current module object
 	@value: string to encrypted, may be empty
 	@pw: optional password string, default FALSE (meaning use the module-default)
-	@based: optional boolean, whether to base64_encode the encrypted value, default TRUE
+	@based: optional boolean, whether to base64_encode the encrypted value, default FALSE
 	Returns: encrypted @value, or just @value if it's empty
 	*/
-	public function encrypt_value(&$mod, $value, $pw=FALSE, $based=TRUE)
+	public function encrypt_value($value, $pw=FALSE, $based=FALSE)
 	{
 		if ($value) {
 			if (!$pw) {
-				$pw = self::decrypt_preference($mod, 'masterpass');
+				$pw = self::decrypt_preference('masterpass');
 			}
 			if ($pw) {
 				$value = parent::encrypt($value, $pw);
@@ -68,17 +75,16 @@ class Crypter Extends Encryption
 
 	/**
 	decrypt_value:
-	@mod: reference to current module object
 	@value: string to decrypted, may be empty
 	@pw: optional password string, default FALSE (meaning use the module-default)
-	@based: optional boolean, whether @value is base64_encoded, default TRUE
+	@based: optional boolean, whether @value is base64_encoded, default FALSE
 	Returns: decrypted @value, or just @value if it's empty
 	*/
-	public function decrypt_value(&$mod, $value, $pw=FALSE, $based=TRUE)
+	public function decrypt_value($value, $pw=FALSE, $based=FALSE)
 	{
 		if ($value) {
 			if (!$pw) {
-				$pw = self::decrypt_preference($mod, 'masterpass');
+				$pw = self::decrypt_preference('masterpass');
 			}
 			if ($pw) {
 				if ($based) {
