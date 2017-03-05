@@ -39,6 +39,46 @@ class Utils
 		}
 	}
 
+	public static function MergeJS($jsincs, $jsfuncs, $jsloads)
+	{
+		if (is_array($jsincs)) {
+			$all = $jsincs;
+		} elseif ($jsincs) {
+			$all = array($jsincs);
+		} else {
+			$all = array();
+		}
+		if ($jsfuncs || $jsloads) {
+			$all[] = <<<'EOS'
+<script type="text/javascript">
+//<![CDATA[
+EOS;
+			if (is_array($jsfuncs)) {
+				$all = array_merge($all, $jsfuncs);
+			} elseif ($jsfuncs) {
+				$all[] = $jsfuncs;
+			}
+			if ($jsloads) {
+				$all[] = <<<'EOS'
+$(document).ready(function() {
+EOS;
+				if (is_array($jsloads)) {
+					$all = array_merge($all, $jsloads);
+				} else {
+					$all[] = $jsloads;
+				}
+				$all[] = <<<'EOS'
+});
+EOS;
+			}
+			$all[] = <<<'EOS'
+//]]>
+</script>
+EOS;
+		}
+		return implode(PHP_EOL, $all);
+	}
+
 	/**
 	data adapted from www.idd.com.au/telephone-country-codes.php and www.geonames.org
 	Returns: array
