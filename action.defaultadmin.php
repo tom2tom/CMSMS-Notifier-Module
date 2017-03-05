@@ -6,11 +6,6 @@
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
 
-$t = 'nQCeESKBr99A';
-$this->SetPreference($t, hash('sha256', $t.microtime()));
-$cfuncs = new Notifier\Crypter($this);
-$cfuncs->encrypt_preference ('masterpass', base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));
-
 $pmod = $this->CheckPermission('ModifyNotifierProperties');
 $psee = $this->CheckPermission('SeeNotifierProperties');
 
@@ -29,15 +24,15 @@ if (isset($params['submit'])) {
 		$newpw = trim($params['masterpass']);
 		if ($oldpw != $newpw) {
 			//update all data which uses current password
-			$t = $cfuncs->decrypt_value($this->GetPreference('privaccess'), $oldpw);
+			$t = $cfuncs->decrypt_value($this->GetPreference('privaccess'), $oldpw, TRUE);
 			if ($newpw) {
-				$t = $cfuncs->encrypt_value($t, $newpw);
+				$t = $cfuncs->encrypt_value($t, $newpw, TRUE);
 			}
 			$this->SetPreference('privaccess', $t);
 
-			$t = $cfuncs->decrypt_value($this->GetPreference('privapi'), $oldpw);
+			$t = $cfuncs->decrypt_value($this->GetPreference('privapi'), $oldpw, TRUE);
 			if ($newpw) {
-				$t = $cfuncs->encrypt_value($t, $newpw);
+				$t = $cfuncs->encrypt_value($t, $newpw, TRUE);
 			}
 			$this->SetPreference('privapi', $t);
 
@@ -47,11 +42,11 @@ if (isset($params['submit'])) {
 			if ($rst) {
 				$sql = 'UPDATE '.$pre.'module_tell_tweeter SET privtoken=? WHERE auth_id=?';
 				while (!$rst->EOF) {
-					$t = $cfuncs->decrypt_value($rst->fields['privtoken'], $oldpw);
+					$t = $cfuncs->decrypt_value($rst->fields['privtoken'], $oldpw); //not encoded in table
 					if ($newpw) {
 						$t = $cfuncs->encrypt_value($t, $newpw);
 					}
-					$db->Execute($sql, array($t, $rst->fields['auth_id']));
+					$db->Execute($sql, [$t, $rst->fields['auth_id']]);
 					if (!$rst->MoveNext()) {
 						break;
 					}
@@ -59,7 +54,6 @@ if (isset($params['submit'])) {
 				$rst->Close();
 			}
 			//TODO any others ?
-
 			$cfuncs->encrypt_preference('masterpass', $newpw);
 		}
 	}
