@@ -10,10 +10,10 @@ if (!$this->CheckPermission('ModifyNotifierProperties')) exit;
 
 switch ($oldversion) {
  case '0.2':
-	$utils = new Notifier\Utils();
-	$utils->encrypt_preference ($this, 'masterpass', base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));
- 	$this->SetPreference('privaccess', 'Ipu4rLD5cvqjq+rAs2sJBs5F/dL7BKsyQRcbhdj9KGlsTc+V+upkvFSzZRfFc/ByEDMc4wq8brAGNPaXAjoMSpB7y3M0g7+4VpwWu2Fn5RDns4OBuolSSEWN2I9+subov+Ad8sgvP9YxcBXVH9SuqdXhro92D4mLozOGwW2z6LfXvrxyelWnGTjDAoFuZdkCEizzVvBoFac=');
-	$this->SetPreference('privapi', '2iqqrdjKjJaorkqX3L19umE/BT5Cs4QWd7kZMkc9bhB9WMVBieWCJ8EvnofJ6+5zHnyLa3YNe8u7Xnu/jR9PKy+WxKvOUN32ymh04gZ6r2ueNHw+L1OImXILE+IXzZlqcvx+zzkQix6p9fCCaPA/tNVtXb9N1yhVrgN4gi/aBtsoKSAuqus3Z5RIZgmtS3thDjsX8hp72BLe/bwQc1Gxiw==');
+	$t = 'nQCeESKBr99A';
+	$this->SetPreference($t, hash('sha256', $t.microtime()));
+	$cfuncs = new Notifier\Crypter($this);
+	$cfuncs->encrypt_preference ('masterpass', base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));
+	$this->SetPreference('privaccess', 'CGgFRuwJgl+SxueHCJ+teBIb5rAWEVpV47SjprzzoL0dYHWvJ53qek3T0aVYRBJt/877nBw16h7uRiSsgcIkOyDr5LAixhjYRu2PelrlT9U6EA0Wj5mgCwziv3aGBfL/297fvVSyTCrcJ2lA0IQK6Vp54aR3loRuAzLbTgs8n8rQhScZiuqUGAGO+zH8MyoBch92mIoXDgk=');
+	$this->SetPreference('privapi', 'VTHfiViKX5nATWUvIlPVNpgVpzGTYgMyn3beBA0YgQJra7dhWDrJnrXcU4s+lm2WZYATO+32Fyq3Tewtc60GhyFzuItR5yQzu/7QN1Rwp0/c7dafhr1yJmhD3yiYdk7dEQ5HyA0YFrjPquSj4PJP5XDCP7Ch2uPwSLOL8Lcu1Y+sWJbxVG1hHZMfKNgavz04gzwWbyqz13zJsm8RH+PApQ==');
 }
-// put mention into the admin log
-$this->Audit(0, $this->Lang('fullname'), $this->Lang('audit_upgraded',$newversion));
