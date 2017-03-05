@@ -6,6 +6,11 @@
 # See file Notifier.module.php for full details of copyright, licence, etc.
 #----------------------------------------------------------------------
 
+$t = 'nQCeESKBr99A';
+$this->SetPreference($t, hash('sha256', $t.microtime()));
+$cfuncs = new Notifier\Crypter($this);
+$cfuncs->encrypt_preference ('masterpass', base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));
+
 $pmod = $this->CheckPermission('ModifyNotifierProperties');
 $psee = $this->CheckPermission('SeeNotifierProperties');
 
@@ -13,25 +18,26 @@ if (!($pmod || $psee)) {
 	exit;
 }
 
-$utils = new Notifier\Utils();
+$cfuncs = new Notifier\Crypter($this);
+//$utils = new Notifier\Utils();
 if (isset($params['submit'])) {
 	if ($pmod) {
 		$this->SetPreference('smspattern', $params['smspattern']);
 		$this->SetPreference('smsprefix', $params['smsprefix']);
 
-		$oldpw = $utils->decrypt_preference($this, 'masterpass');
+		$oldpw = $cfuncs->decrypt_preference('masterpass');
 		$newpw = trim($params['masterpass']);
 		if ($oldpw != $newpw) {
 			//update all data which uses current password
-			$t = $utils->decrypt_value($this, $this->GetPreference('privaccess'), $oldpw);
+			$t = $cfuncs->decrypt_value($this->GetPreference('privaccess'), $oldpw);
 			if ($newpw) {
-				$t = $utils->encrypt_value($this, $t, $newpw);
+				$t = $cfuncs->encrypt_value($t, $newpw);
 			}
 			$this->SetPreference('privaccess', $t);
 
-			$t = $utils->decrypt_value($this, $this->GetPreference('privapi'), $oldpw);
+			$t = $cfuncs->decrypt_value($this->GetPreference('privapi'), $oldpw);
 			if ($newpw) {
-				$t = $utils->encrypt_value($this, $t, $newpw);
+				$t = $cfuncs->encrypt_value($t, $newpw);
 			}
 			$this->SetPreference('privapi', $t);
 
@@ -41,11 +47,11 @@ if (isset($params['submit'])) {
 			if ($rst) {
 				$sql = 'UPDATE '.$pre.'module_tell_tweeter SET privtoken=? WHERE auth_id=?';
 				while (!$rst->EOF) {
-					$t = $utils->decrypt_value($this, $rst->fields[1], $oldpw);
+					$t = $cfuncs->decrypt_value($rst->fields['privtoken'], $oldpw);
 					if ($newpw) {
-						$t = $utils->encrypt_value($this, $t, $newpw);
+						$t = $cfuncs->encrypt_value($t, $newpw);
 					}
-					$db->Execute($sql, array($t, $rst->fields[0]));
+					$db->Execute($sql, array($t, $rst->fields['auth_id']));
 					if (!$rst->MoveNext()) {
 						break;
 					}
@@ -54,7 +60,7 @@ if (isset($params['submit'])) {
 			}
 			//TODO any others ?
 
-			$utils->encrypt_preference($this, 'masterpass', $newpw);
+			$cfuncs->encrypt_preference('masterpass', $newpw);
 		}
 	}
 	$params['activetab'] = 'settings';
@@ -102,7 +108,7 @@ $details = array();
 $mod = cms_utils::get_module('SMSG');
 if ($mod) {
 	unset($mod);
-	$gateway = smsg_utils::get_gateway();
+	$gateway = SMSG\Utils::get_gateway();
 	if ($gateway) {
 		$details[] = $this->Lang('channel_text_yes').'.';
 		$y = $this->Lang('yes');
@@ -244,7 +250,7 @@ $tplvars += array(
 	'title_password' => $this->Lang('title_password')
 );
 
-$pw = $utils->decrypt_preference($this, 'masterpass');
+$pw = $cfuncs->decrypt_preference('masterpass');
 $tplvars['input_password'] =
 	$this->CreateTextArea(FALSE, $id, $pw, 'masterpass', 'cloaked',
 		$id.'passwd', '', '', 40, 2);
@@ -263,14 +269,13 @@ if ($pmod) {
 	$tplvars['cancel'] = $this->CreateInputSubmit($id, 'cancel', $this->Lang('cancel'));
 }
 
-if ($jsloads) {
-	$jsfuncs[] = '$(document).ready(function() {
-';
-	$jsfuncs = array_merge($jsfuncs, $jsloads);
-	$jsfuncs[] = '});
-';
-}
-$tplvars['jsfuncs'] = $jsfuncs;
-$tplvars['jsincs'] = $jsincs;
+$jsall = Notifier\Utils::MergeJS($jsincs, $jsfuncs, $jsloads);
+unset($jsincs);
+unset($jsfuncs);
+unset($jsloads);
 
 echo Notifier\Utils::ProcessTemplate($this, 'adminpanel.tpl', $tplvars);
+
+if ($jsall) {
+	echo $jsall;
+}
