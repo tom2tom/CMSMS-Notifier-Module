@@ -163,10 +163,10 @@ if ($this->before20) {
 	if ($mod) {
 		$details[] = $this->Lang('channel_email_yes').'.';
 		$s1 = $mod->GetPreference('fromuser');
-		$s2 = $mod->GetPreference('from');
+		$s2 = $mod->GetPreference('from','?');
 		if ($s1) {
 			$from = $s1.' &lt;'.$s2.'&gt;';
-		} elseif ($s2) {
+		} elseif ($s2 != '?') {
 			$from = $s2;
 		} else {
 			$from = '??';
@@ -179,11 +179,11 @@ if ($this->before20) {
 } else {
 	$details[] = $this->Lang('channel_email_yes').'.';
 	$prefs = unserialize(cms_siteprefs::get('mailprefs'));
-	$s1 = get_parameter_value($prefs, 'fromuser');
-	$s2 = get_parameter_value($prefs, 'from');
+	$s1 = (!empty($prefs['fromuser'])) ? $prefs['fromuser'] : '';
+	$s2 = (!empty($prefs['from'])) ? $prefs['from'] : '?';
 	if ($s1) {
 		$from = $s1.' &lt;'.$s2.'&gt;';
-	} elseif ($s2) {
+	} elseif ($s2 != '?') {
 		$from = $s2;
 	} else {
 		$from = '??';
