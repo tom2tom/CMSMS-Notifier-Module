@@ -78,25 +78,24 @@ $t = $this->StartTabHeaders().
  $this->SetTabHeader('settings', $this->Lang('title_settingstab'), $indx==2).
  $this->EndTabHeaders().$this->StartTabContent();
 
-//NOTE CMSMS 2+ barfs if EndTab() is called before EndTabContent() - some craziness there !!!
+//workaround CMSMS2 crap 'auto-end', EndTab() & EndTabContent() before [1st] StartTab()
 $tplvars = array(
 	'tabsheader' => $t,
-	'tabsfooter' => $this->EndTabContent(),
 	'tab_end' => $this->EndTab(),
+	'tabsfooter' => $this->EndTabContent(),
+	'tabstart_main' => $this->StartTab('main'),
+	'formstart_main' => $this->CreateFormStart($id, 'twitauth'),
 	'form_end' => $this->CreateFormEnd()
 );
-
-$jsincs = array();
-$jsfuncs = array();
-$jsloads = array();
-$baseurl = $this->GetModuleURLPath();
 
 if (!empty($params['message'])) {
 	$tplvars['message'] = $params['message'];
 }
 
-$tplvars['tabstart_main'] = $this->StartTab('main');
-$tplvars['formstart_main'] = $this->CreateFormStart($id, 'twitauth');
+$jsincs = array();
+$jsfuncs = array();
+$jsloads = array();
+$baseurl = $this->GetModuleURLPath();
 
 $details = array();
 $mod = cms_utils::get_module('SMSG');
