@@ -130,7 +130,7 @@ class Notifier extends CMSModule
 
 	public function GetChangeLog()
 	{
-		$fn = cms_join_path(dirname(__FILE__), 'include', 'changelog.inc');
+		$fn = cms_join_path(dirname(__FILE__), 'lib','doc', 'changelog.htm');
 		return @file_get_contents($fn);
 	}
 
