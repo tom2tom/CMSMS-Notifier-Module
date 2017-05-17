@@ -9,13 +9,13 @@ namespace Notifier;
 
 class SMSSender
 {
-	public $utils;
 	public $gateway;
+	public $utils; //SMSG::Utils
 	public $skips; //array of trimmed addresses ignored during validation, or FALSE
+	private $notifutils; //Notifier::Utils
 	private $fromnum; //whether gateway supports a specific sender-number
 	private $addprefix; //whether gateway requires country-prefix for each phone no. or else supports phone no. as-is
 	private $addplus; //whether gateway requires a leading '+' in the country-prefix, if any
-	private $notifutils;
 
 	public function __construct()
 	{
@@ -90,17 +90,17 @@ class SMSSender
 	@to: array of validated phone-no(s)
 	@from: validated phone-no to be used (if the gateway allows) as sender, or FALSE
 	@body: the message
-	Returns: 2-member array -
+	Returns: 2-member array,
 	 [0] FALSE if no addressee or no SMSG-module gateway, otherwise boolean cumulative result of gateway->send()
 	 [1] '' or error message e.g. from gateway->send() to $to
 	*/
 	private function DoSend(&$mod, $prefix, $to, $from, $body)
 	{
-		if (!$to) {
-			return array(FALSE,'');
-		}
 		if (!$this->gateway) {
 			return array(FALSE,$mod->Lang('err_system'));
+		}
+		if (!$to) {
+			return array(FALSE,'');
 		}
 		if (!$body || !$this->utils->text_is_valid($body)) {
 			return array(FALSE,$mod->Lang('err_text').' \''.$body.'\'');
