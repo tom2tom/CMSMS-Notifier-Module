@@ -115,7 +115,7 @@ class Notifier extends CMSModule
 
 	public function GetVersion()
 	{
-		return '0.3';
+		return '0.3.1';
 	}
 
 	public function GetAuthor()
