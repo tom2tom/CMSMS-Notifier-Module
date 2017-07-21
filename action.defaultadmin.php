@@ -24,18 +24,6 @@ if (isset($params['submit'])) {
 		$newpw = trim($params[$key]);
 		if ($oldpw != $newpw) {
 			//update all data which uses current password
-			$t = $cfuncs->decrypt_value($this->GetPreference('privaccess'), $oldpw, TRUE);
-			if ($newpw) {
-				$t = $cfuncs->encrypt_value($t, $newpw, TRUE);
-			}
-			$this->SetPreference('privaccess', $t);
-
-			$t = $cfuncs->decrypt_value($this->GetPreference('privapi'), $oldpw, TRUE);
-			if ($newpw) {
-				$t = $cfuncs->encrypt_value($t, $newpw, TRUE);
-			}
-			$this->SetPreference('privapi', $t);
-
 			$pre = cms_db_prefix();
 			$sql = 'SELECT auth_id,privtoken FROM '.$pre.'module_tell_tweeter';
 			$rst = $db->Execute($sql);
@@ -56,6 +44,8 @@ if (isset($params['submit'])) {
 			//TODO any others ?
 			$cfuncs->encrypt_preference($key, $newpw);
 		}
+//no UI	$cfuncs->encrypt_preference('privaccess', $params['privaccess']);
+//no UI	$cfuncs->encrypt_preference('privapi', $params['privapi']);
 	}
 	$params['activetab'] = 'settings';
 }

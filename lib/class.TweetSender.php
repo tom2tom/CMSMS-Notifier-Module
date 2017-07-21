@@ -13,12 +13,10 @@ class TweetSender
 	public $skips; //array of trimmed addresses ignored during validation, or FALSE
 	private $mod; //reference to current Notifier object
 	private $loaded = FALSE;
-	//credentials for 'CMSMS Notifier' app
+	//credential for 'CMSMS Notifier' app
 	private $api_key = 'uqQexWOK7RNjlMNqvvTfEqMDh';
-	private $api_secret;
-	//credentials for default sender
+	//credential for default sender
 	private $access_token = '4109330354-VVDKfSYG4xFedZmyIIEL1ClBGEbW5qMcStj5mm4';
-	private $access_secret;
 
 	public function __construct(&$mod = NULL)
 	{
@@ -34,8 +32,6 @@ class TweetSender
 			$mod = \cms_utils::get_module('Notifier');
 		}
 		$this->mod = $mod;
-		$this->api_secret = $mod->GetPreference('privapi');
-		$this->access_secret = $mod->GetPreference('privaccess');
 	}
 
 	/**
@@ -97,7 +93,7 @@ class TweetSender
 			if ($handle) {
 				if ($handle = '@CMSMSNotifier') {
 					$pubtoken = $this->api_key;
-					$privtoken = $cfuncs->decrypt_value($this->api_secret,FALSE,TRUE);
+					$privtoken = $cfuncs->decrypt_preference('privapi');
 				} else {
 					$pref = \cms_db_prefix();
 					$sql = 'SELECT pubtoken,privtoken FROM '.$pref.'module_tell_tweeter WHERE handle=?';
@@ -111,7 +107,7 @@ class TweetSender
 				}
 				$creds = [
 				 'api_key'=>$this->api_key,
-				 'api_secret'=>$cfuncs->decrypt_value($this->api_secret,FALSE,TRUE),
+				 'api_secret'=>$cfuncs->decrypt_preference('privapi'),
 				 'access_token'=>$pubtoken,
 				 'access_secret'=>$privtoken
 				];
@@ -120,14 +116,14 @@ class TweetSender
 					$creds['api_key'] = $this->api_key;
 				}
 				if (empty($creds['api_secret'])) {
-					$creds['api_secret'] = $cfuncs->decrypt_value($this->api_secret,FALSE,TRUE);
+					$creds['api_secret'] = $cfuncs->decrypt_preference('privapi');
 				}
 			} else {
 				$creds = [
 				 'api_key'=>$this->api_key,
-				 'api_secret'=>$cfuncs->decrypt_value($this->api_secret,FALSE,TRUE),
+				 'api_secret'=>$cfuncs->decrypt_preference('privapi'),
 				 'access_token'=>$this->access_token,
-				 'access_secret'=>$cfuncs->decrypt_value($this->access_secret,FALSE,TRUE)
+				 'access_secret'=>$cfuncs->decrypt_preference('privaccess')
 				];
 			}
 			//setup with real access codes
@@ -192,7 +188,7 @@ class TweetSender
 	public function ModuleAppTokens()
 	{
 		$cfuncs = new Crypter($this->mod);
-		return [$this->api_key,$cfuncs->decrypt_value($this->api_secret,FALSE,TRUE)];
+		return [$this->api_key,$cfuncs->decrypt_preference('privapi')];
 	}
 
 	/**
