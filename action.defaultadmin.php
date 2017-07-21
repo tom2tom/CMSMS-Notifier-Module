@@ -19,9 +19,9 @@ if (isset($params['submit'])) {
 	if ($pmod) {
 		$this->SetPreference('smspattern', $params['smspattern']);
 		$this->SetPreference('smsprefix', $params['smsprefix']);
-
-		$oldpw = $cfuncs->decrypt_preference('masterpass');
-		$newpw = trim($params['masterpass']);
+		$key = Notifier\Crypter::MKEY;
+		$oldpw = $cfuncs->decrypt_preference($key);
+		$newpw = trim($params[$key]);
 		if ($oldpw != $newpw) {
 			//update all data which uses current password
 			$t = $cfuncs->decrypt_value($this->GetPreference('privaccess'), $oldpw, TRUE);
@@ -54,7 +54,7 @@ if (isset($params['submit'])) {
 				$rst->Close();
 			}
 			//TODO any others ?
-			$cfuncs->encrypt_preference('masterpass', $newpw);
+			$cfuncs->encrypt_preference($key, $newpw);
 		}
 	}
 	$params['activetab'] = 'settings';
@@ -243,9 +243,10 @@ $tplvars += array(
 	'title_password' => $this->Lang('title_password')
 );
 
-$pw = $cfuncs->decrypt_preference('masterpass');
+$key = Notifier\Crypter::MKEY;
+$t = $cfuncs->decrypt_preference($key);
 $tplvars['input_password'] =
-	$this->CreateTextArea(FALSE, $id, $pw, 'masterpass', 'cloaked',
+	$this->CreateTextArea(FALSE, $id, $t, $key, 'cloaked',
 		$id.'passwd', '', '', 40, 2);
 
 $jsincs[] = '<script type="text/javascript" src="'.$baseurl.'/lib/js/jquery-inputCloak.min.js"></script>';
