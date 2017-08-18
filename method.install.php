@@ -23,7 +23,7 @@ $tblname = cms_db_prefix().'module_tell_tweeter';
 $sql = $dict->CreateTableSQL($tblname, $flds, $taboptarray);
 $dict->ExecuteSQLArray($sql);
 
-$cfuncs = new Notifier\Crypter($this);
+$cfuncs = new Notifier\CryptInit($this);
 $cfuncs->init_crypt();
 $cfuncs->encrypt_preference (Notifier\Crypter::MKEY,
 	base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));

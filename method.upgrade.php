@@ -12,7 +12,7 @@ switch ($oldversion) {
  case '0.2':
 	$t = 'nQCeESKBr99A';
 	$this->SetPreference($t, hash('sha256', $t.microtime()));
-	$cfuncs = new Notifier\Crypter($this);
+	$cfuncs = new Notifier\CryptInit($this);
 	$cfuncs->init_crypt();
 	$key = Notifier\Crypter::MKEY;
 	$cfuncs->encrypt_preference($key, base64_decode('RW50ZXIgYXQgeW91ciBvd24gcmlzayEgRGFuZ2Vyb3VzIGRhdGEh'));
@@ -35,7 +35,7 @@ switch ($oldversion) {
 	}
  case 0.3:
 	if (!isset($cfuncs)) {
-		$cfuncs = new Notifier\Crypter($this);
+		$cfuncs = new Notifier\CryptInit($this);
 		$key = 'masterpass';
 		$s = base64_decode($this->GetPreference($key));
 		$t = $config['ssl_url'].$this->GetModulePath();
