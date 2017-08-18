@@ -9,15 +9,17 @@
 $taboptarray = array('mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci',
  'mysqli' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
 $dict = NewDataDictionary($db);
-/*if privtoken is not encoded after encryption, & want explicit-sized field:
-postgres supported pre-1.11
-$ftype = (preg_match('/mysql/i',$config['dbms'])) ? 'VARBINARY(256)':'BIT VARYING(2048)';
-*/
+if (strncasecmp($config['dbms'], 'mysql', 5) == 0) {
+	$bs = 'B(256)';
+} else {
+	//postgres supported pre-1.11
+	$bs = 'B';
+}
 $flds = '
 auth_id I(4) AUTO KEY,
 handle C(20),
 pubtoken C(72),
-privtoken B
+privtoken '.$bs.'
 ';
 $tblname = cms_db_prefix().'module_tell_tweeter';
 $sql = $dict->CreateTableSQL($tblname, $flds, $taboptarray);
