@@ -210,7 +210,7 @@ class Notifier extends CMSModule
 
 	public function LazyLoadFrontend()
 	{
-		return FALSE;
+		return TRUE;
 	}
 
 	//setup for pre-1.10
