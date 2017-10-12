@@ -30,19 +30,19 @@ class Notifier extends CMSModule
 		$this->before20 = (version_compare($CMS_VERSION, '2.0') < 0);
 		$this->oldtemplates = $this->before20 || 1; //TODO
 
-		spl_autoload_register([$this, 'cmsms_spacedload']);
+//		spl_autoload_register([$this, 'cmsms_spacedload']);
 	}
 
-	public function __destruct()
+/*	public function __destruct()
 	{
 		spl_autoload_unregister([$this, 'cmsms_spacedload']);
 		if (function_exists('parent::__destruct')) {
 			parent::__destruct();
 		}
 	}
-
+*/
 	/* namespace autoloader - CMSMS default autoloader doesn't do spacing */
-	private function cmsms_spacedload($class)
+/*	private function cmsms_spacedload($class)
 	{
 		$prefix = get_class().'\\'; //our namespace prefix
 		$o = ($class[0] != '\\') ? 0:1;
@@ -80,7 +80,7 @@ class Notifier extends CMSModule
 			include $fp;
 		}
 	}
-
+*/
 	public function AllowAutoInstall()
 	{
 		return FALSE;
