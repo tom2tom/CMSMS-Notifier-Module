@@ -168,6 +168,15 @@ class Notifier extends CMSModule
 		return TRUE;
 	}
 
+    public function HasCapability($capability, $params = array())
+    {
+        switch ($capability) {
+		 case CmsCoreCapabilities::PLUGIN_MODULE:
+            return TRUE;
+        }
+        return FALSE;
+    }
+
 	public function HasAdmin()
 	{
 		return TRUE;
